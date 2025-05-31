@@ -183,8 +183,8 @@ public ArrayList<Carreras> arrayCarrera = new ArrayList();
                 
                         if (carrera instanceof Cañas_Liberia) {
                             totalIngresos += ((Cañas_Liberia) carrera).totalGanancias_CañasLiberia;
-                        } else if (carrera instanceof Liberia_Cañas) {
-                            totalIngresos += ((Liberia_Cañas) carrera).totalGanancias_LiberiaCañas;
+                        } else if (carrera instanceof liberia_Cañas) {
+                            totalIngresos += ((liberia_Cañas) carrera).totalGanancias_LiberiaCañas;
                         }
                 
                         totalPasajeros += carrera.getTotalPasajeros();
