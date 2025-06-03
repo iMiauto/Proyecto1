@@ -9,25 +9,24 @@ import java.io.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.FocusAdapter;
+import java.awt.event.FocusEvent;
 import java.util.*;
+import java.sql.*;
 public class Principal extends JFrame implements Serializable{
 public ArrayList<Carreras> arrayCarrera = new ArrayList(); 
 
 
-    public Principal() {
-
-        setTitle("Reina del Campo S.A.");
-        setSize(400, 300);
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setLocationRelativeTo(null);
-        setResizable(false);
-        menuPrincipal();
-        setVisible(true);
-    }
-
     private void menuPrincipal() {
+        JFrame frame = new JFrame("Menú Principal");
+        frame.setTitle("Reina del Campo S.A.");
+        frame.setSize(400, 300);
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setLocationRelativeTo(null);
+        frame.setResizable(false);
+        frame.setVisible(true);
 
-        Container contenedor = getContentPane();
+        Container contenedor = frame.getContentPane();
         contenedor.setLayout(null);
         contenedor.setBackground(new Color(246, 239, 239));
 
@@ -365,8 +364,164 @@ public void carrera() {
 
     int sentido; 
 }
+private  void ingreso_Usuario() {
+    JFrame f = new JFrame("Validación de usuario");
+    f.setTitle("Reina del Campo S.A. - Bienvenido");
+    f.setSize(400, 300);
+    f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+    f.setLocationRelativeTo(null);
+    f.setResizable(false);
+    f.setLayout(null);
 
-    public static void main(String[] args) {
-        new Principal(); 
+    Container c = f.getContentPane();
+    c.setBackground(new Color(239, 246, 252));
+
+    JLabel labelTitulo = new JLabel("<html><center>Reina del Campo S.A<br>Bienvenido</center></html>", SwingConstants.CENTER);
+    labelTitulo.setFont(new Font("Times New Roman", Font.BOLD, 20));
+    labelTitulo.setBounds(100, 10, 200, 50);
+    labelTitulo.setForeground(new Color(0, 70, 140));
+
+        ImageIcon icono = new ImageIcon(Principal.class.getResource("Recurso/Icono_bus.jpg")); 
+        f.setIconImage(icono.getImage());
+
+    c.add(labelTitulo);
+
+    // JTextField con placeholder "Usuario"
+    JTextField txtUsuario = new JTextField("Usuario");
+    txtUsuario.setBounds(100, 80, 200, 30);
+    txtUsuario.setForeground(Color.GRAY);
+    txtUsuario.addFocusListener(new FocusAdapter() {
+        @Override
+        public void focusGained(FocusEvent e) {
+            if (txtUsuario.getText().equals("Usuario")) {
+                txtUsuario.setText("");
+                txtUsuario.setForeground(Color.BLACK);
+            }
+        }
+
+        @Override
+        public void focusLost(FocusEvent e) {
+            if (txtUsuario.getText().isEmpty()) {
+                txtUsuario.setForeground(Color.GRAY);
+                txtUsuario.setText("Usuario");
+            }
+        }
+    });
+    c.add(txtUsuario);
+
+    // JPasswordField con placeholder "Contraseña"
+    JPasswordField txtContrasena = new JPasswordField("Contraseña");
+    txtContrasena.setBounds(100, 120, 200, 30);
+    txtContrasena.setForeground(Color.GRAY);
+    txtContrasena.setEchoChar((char) 0); // Mostrar texto
+
+    txtContrasena.addFocusListener(new FocusAdapter() {
+        @Override
+        public void focusGained(FocusEvent e) {
+            if (String.valueOf(txtContrasena.getPassword()).equals("Contraseña")) {
+                txtContrasena.setText("");
+                txtContrasena.setForeground(Color.BLACK);
+                txtContrasena.setEchoChar('*');
+            }
+        }
+
+        @Override
+        public void focusLost(FocusEvent e) {
+            if (String.valueOf(txtContrasena.getPassword()).isEmpty()) {
+                txtContrasena.setForeground(Color.GRAY);
+                txtContrasena.setText("Contraseña");
+                txtContrasena.setEchoChar((char) 0);
+            }
+        }
+    });
+    c.add(txtContrasena);
+
+    // Botón Ingresar
+    JButton btnIngresar = new JButton("Ingresar");
+    btnIngresar.setBounds(150, 180, 100, 30);
+    btnIngresar.setBackground(new Color(20, 113, 159));
+    btnIngresar.setForeground(Color.WHITE);
+    c.add(btnIngresar);
+
+    //Agregar acción al botón Ingresar que consulten  DB 
+    btnIngresar.addActionListener(new ActionListener() {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            String usuario = txtUsuario.getText().trim();
+            String contrasena = String.valueOf(txtContrasena.getPassword()).trim();
+
+            if (usuario.equals("Usuario") || contrasena.equals("Contraseña")) {
+                JOptionPane.showMessageDialog(f, "Por favor, complete los campos correctamente.", "Error", JOptionPane.ERROR_MESSAGE);
+            } else {
+              if(validarUsuario(usuario, contrasena)){
+              JOptionPane.showMessageDialog(f, "Ingreso exitoso. Bienvenido " + usuario + "!", "Éxito", JOptionPane.INFORMATION_MESSAGE);
+                menuPrincipal(); // Abrir la ventana principal
+                f.dispose(); // Cerrar la ventana de ingreso
+
+              }else {
+               JOptionPane.showMessageDialog(f, "Ingreso Fallido " , "Error", JOptionPane.INFORMATION_MESSAGE);
+              }
+               
+              
+            }
+        }
+    });
+              btnIngresar.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseEntered(MouseEvent e) {
+                btnIngresar.setBackground(new Color(114, 182, 216)); 
+            }
+
+            @Override
+            public void mouseExited(MouseEvent e) {
+                btnIngresar.setBackground(new Color(20, 113, 159)); 
+            }
+            @Override
+            public void mouseClicked (MouseEvent e){
+                ingresosPorUnidad();
+            }
+        });
+
+    f.setVisible(true);
+}
+private boolean validarUsuario(String usuario, String contrasena) {
+    Connection conn = null;
+    PreparedStatement stmt = null;
+    ResultSet rs = null;
+    boolean isValid = false;
+
+    try {
+        // Conexión a la base de datos
+        conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/proyecto1", "root", "Tree23815");
+
+        
+        String sql = "SELECT * FROM autentificacion WHERE login = ? AND Contraseña = ?";
+        stmt = conn.prepareStatement(sql);
+        stmt.setString(1, usuario);     
+        stmt.setString(2, contrasena); 
+
+        
+        rs = stmt.executeQuery();
+        if (rs.next()) {
+            isValid = true;
+        } else {
+            JOptionPane.showMessageDialog(null, "Usuario o contraseña incorrectos.", "Error", JOptionPane.ERROR_MESSAGE);
+        }
+
+    } catch (SQLException e) {
+        e.printStackTrace();
+    } finally {
+        try { if (rs != null) rs.close(); } catch (SQLException e) { e.printStackTrace(); }
+        try { if (stmt != null) stmt.close(); } catch (SQLException e) { e.printStackTrace(); }
+        try { if (conn != null) conn.close(); } catch (SQLException e) { e.printStackTrace(); }
+    }
+
+    return isValid;
+}
+
+
+    public static   void main(String[] args) {
+       new Principal().ingreso_Usuario();
+    
     }
 }
