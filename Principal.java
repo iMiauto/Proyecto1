@@ -1,6 +1,3 @@
-import java.awt.Color;
-import java.awt.Container;
-import java.awt.Font;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
@@ -18,114 +15,94 @@ public ArrayList<Carreras> arrayCarrera = new ArrayList();
 
 
     private void menuPrincipal() {
-        JFrame frame = new JFrame("Menú Principal");
-        frame.setTitle("Reina del Campo S.A.");
-        frame.setSize(400, 300);
+        JFrame frame = new JFrame("Reina del Campo S.A.: Menú");
+        frame.setSize(700, 400);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setLocationRelativeTo(null);
         frame.setResizable(false);
+        frame.setLayout(new BorderLayout());
+
+        // Título
+        JLabel labelTitulo = new JLabel("<html><center>Reina del Campo S.A.<br>Menú</center></html>", SwingConstants.CENTER);
+        labelTitulo.setFont(new Font("Segoe UI", Font.BOLD, 28));
+        labelTitulo.setForeground(new Color(20, 70, 140));
+        labelTitulo.setBorder(BorderFactory.createEmptyBorder(20, 0, 10, 0));
+        frame.add(labelTitulo, BorderLayout.NORTH);
+
+        // Panel central con dos columnas
+        JPanel panelCentral = new JPanel(new GridLayout(1, 2, 20, 0));
+        panelCentral.setBackground(Color.WHITE);
+        panelCentral.setBorder(BorderFactory.createEmptyBorder(10, 30, 30, 30));
+
+
+        JPanel panelIzquierda = new JPanel(new GridLayout(3, 1, 15, 15));
+
+        
+        ImageIcon iconoCarrera = new ImageIcon(Principal.class.getResource("Recurso/Carreras.png"));
+        ImageIcon AñadirUnidad = new ImageIcon(Principal.class.getResource("Recurso/add.png"));
+        ImageIcon iconoIngresos = new ImageIcon(Principal.class.getResource("Recurso/colon.png"));
+        
+        panelIzquierda.setBackground(Color.WHITE);
+        panelIzquierda.add(botones("Carreras",iconoCarrera));
+        panelIzquierda.add(botones("Agregar unidades", AñadirUnidad));
+        panelIzquierda.add(botones("Ingresos ", iconoIngresos));
+
+        
+        JPanel panelDerecha = new JPanel(new GridLayout(3, 1, 15, 15));
+
+        ImageIcon iconAutoría = new ImageIcon(Principal.class.getResource("Recurso/Autor.png")); 
+        ImageIcon iconAdmin = new ImageIcon(Principal.class.getResource("Recurso/DB.png"));
+        ImageIcon iconUsuarios = new ImageIcon(Principal.class.getResource("Recurso/agregar-usuario.png"));
+        
+        panelDerecha.setBackground(Color.WHITE);
+        panelDerecha.add(botones("Autoría",iconAutoría));
+        panelDerecha.add(botones("Administración de DB",iconAdmin));
+        panelDerecha.add(botones("Usuarios",iconUsuarios));
+
+    
+        panelCentral.add(panelIzquierda);
+        panelCentral.add(panelDerecha);
+
+        frame.add(panelCentral, BorderLayout.CENTER);
+        frame.getContentPane().setBackground(new Color(240, 245, 252));
         frame.setVisible(true);
-
-        Container contenedor = frame.getContentPane();
-        contenedor.setLayout(null);
-        contenedor.setBackground(new Color(246, 239, 239));
-
-        // Etiqueta de título
-        JLabel labelTitulo = new JLabel("Reina del Campo S.A");
-        labelTitulo.setFont(new Font("Times New Roman", Font.BOLD, 20));
-        labelTitulo.setBounds(100, 20, 200, 30);
-        labelTitulo.setForeground(new Color(20, 113, 159));
-        contenedor.add(labelTitulo);
-
-
-        JButton buttonCarrera = new JButton("Carrera");
-        buttonCarrera.setBounds(50, 80, 120, 40);
-        buttonCarrera.setBackground(new Color(20, 113, 159));
-        buttonCarrera.setForeground(Color.WHITE);
-        contenedor.add(buttonCarrera);
-
-
-        JButton buttonCrear = new JButton("Agregar unidades");
-        buttonCrear.setBounds(200, 80, 140, 40);
-        buttonCrear.setBackground(new Color(20, 113, 159));
-        buttonCrear.setForeground(Color.WHITE);
-        contenedor.add(buttonCrear);
-
-
-        JButton buttonMuestra = new JButton("Ingresos");
-        buttonMuestra.setBounds(125, 150, 120, 40);
-        buttonMuestra.setBackground(new Color(20, 113, 159));
-        buttonMuestra.setForeground(Color.WHITE);
-        contenedor.add(buttonMuestra);
-
-
-        buttonCarrera.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mouseEntered(MouseEvent e) {
-                buttonCarrera.setBackground(new Color(114, 182, 216)); 
-            }
-
-            @Override
-            public void mouseExited(MouseEvent e) {
-                buttonCarrera.setBackground(new Color(20, 113, 159)); // Restaurar color al salir del mouse
-            }
-            @Override
-            public void mouseClicked (MouseEvent e){
-                carrera();
-            }
-            
-        });
-        
-        buttonCrear.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mouseEntered(MouseEvent e) {
-                buttonCrear.setBackground(new Color(114, 182, 216)); // Cambiar color al pasar el mouse
-            }
-
-            @Override
-            public void mouseExited(MouseEvent e) {
-                buttonCrear.setBackground(new Color(20, 113, 159)); // Restaurar color al salir del mouse
-            }
-            @Override
-            public void mouseClicked (MouseEvent e){
-                int funcionamiento = 1 ; 
-                String nombre =  ""; 
-               
-                
-
-                Carreras control_Cañas = new Cañas_Liberia(funcionamiento,nombre,3,1.1);
-                arrayCarrera.add(control_Cañas); 
-
-                for (Carreras carreras : arrayCarrera) {
-
-                     funcionamiento = carreras.getUnidad();   
-                     nombre = carreras.getNombreUnidad();   
-                     Carreras control__Liberia = new liberia_Cañas(funcionamiento, nombre, 3, 1.1);
-                     arrayCarrera.add(control__Liberia);
-
-                }
-  
-            }
-
-        });
-           buttonMuestra.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mouseEntered(MouseEvent e) {
-                buttonMuestra.setBackground(new Color(114, 182, 216)); 
-            }
-
-            @Override
-            public void mouseExited(MouseEvent e) {
-                buttonMuestra.setBackground(new Color(20, 113, 159)); 
-            }
-            @Override
-            public void mouseClicked (MouseEvent e){
-                ingresosPorUnidad();
-            }
-        });
-        
-
     }
+    private JButton botones(String texto, ImageIcon icono) {
+        JButton btn = new JButton(texto, icono);
+        Color colorBase = new Color(20, 113, 159);        
+        Color colorHover = new Color(30, 140, 190);        
+
+        btn.setFocusPainted(false);
+        btn.setFont(new Font("Segoe UI", Font.BOLD, 16));
+        btn.setForeground(Color.WHITE);                  
+        btn.setBackground(colorBase);                    
+        btn.setCursor(new Cursor(Cursor.HAND_CURSOR));
+        btn.setContentAreaFilled(true);
+        btn.setOpaque(true);
+        btn.setBorder(BorderFactory.createEmptyBorder(10, 20, 10, 20)); 
+        btn.setHorizontalAlignment(SwingConstants.LEFT);  
+        btn.setIconTextGap(10);                          
+
+        btn.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseEntered(MouseEvent e) {
+                btn.setBackground(colorHover);
+            }
+
+            @Override
+            public void mouseExited(MouseEvent e) {
+                btn.setBackground(colorBase);
+            }
+        });
+
+        return btn;
+    }
+
+
+
+
+
+
     /**
      * 
      */
@@ -386,7 +363,7 @@ private  void ingreso_Usuario() {
 
     c.add(labelTitulo);
 
-    // JTextField con placeholder "Usuario"
+    
     JTextField txtUsuario = new JTextField("Usuario");
     txtUsuario.setBounds(100, 80, 200, 30);
     txtUsuario.setForeground(Color.GRAY);
@@ -409,7 +386,7 @@ private  void ingreso_Usuario() {
     });
     c.add(txtUsuario);
 
-    // JPasswordField con placeholder "Contraseña"
+   
     JPasswordField txtContrasena = new JPasswordField("Contraseña");
     txtContrasena.setBounds(100, 120, 200, 30);
     txtContrasena.setForeground(Color.GRAY);
@@ -437,11 +414,12 @@ private  void ingreso_Usuario() {
     c.add(txtContrasena);
 
     // Botón Ingresar
-    JButton btnIngresar = new JButton("Ingresar");
-    btnIngresar.setBounds(150, 180, 100, 30);
-    btnIngresar.setBackground(new Color(20, 113, 159));
-    btnIngresar.setForeground(Color.WHITE);
-    c.add(btnIngresar);
+  JButton btnIngresar = new JButton("Consultar");
+           btnIngresar.setFont(new Font("Segoe UI", Font.BOLD, 16));
+           btnIngresar.setForeground(Color.WHITE);
+           btnIngresar.setBackground(new Color(20, 113, 159));
+           btnIngresar.setBounds(140, 180, 120, 40); 
+  c.add(btnIngresar);
 
     //Agregar acción al botón Ingresar que consulten  DB 
     btnIngresar.addActionListener(new ActionListener() {
@@ -454,12 +432,12 @@ private  void ingreso_Usuario() {
                 JOptionPane.showMessageDialog(f, "Por favor, complete los campos correctamente.", "Error", JOptionPane.ERROR_MESSAGE);
             } else {
               if(validarUsuario(usuario, contrasena)){
-              JOptionPane.showMessageDialog(f, "Ingreso exitoso. Bienvenido " + usuario + "!", "Éxito", JOptionPane.INFORMATION_MESSAGE);
+              JOptionPane.showMessageDialog(f, "Ingreso exitoso. Bienvenido " + usuario + " !", "Éxito", JOptionPane.INFORMATION_MESSAGE);
                 menuPrincipal(); // Abrir la ventana principal
                 f.dispose(); // Cerrar la ventana de ingreso
 
               }else {
-               JOptionPane.showMessageDialog(f, "Ingreso Fallido " , "Error", JOptionPane.INFORMATION_MESSAGE);
+              
               }
                
               
