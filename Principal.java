@@ -341,7 +341,7 @@ public void carrera() {
 
     int sentido; 
 }
-private  void ingreso_Usuario() {
+private void ingreso_Usuario() {
     JFrame f = new JFrame("Validación de usuario");
     f.setTitle("Reina del Campo S.A. - Bienvenido");
     f.setSize(400, 300);
@@ -357,13 +357,16 @@ private  void ingreso_Usuario() {
     labelTitulo.setFont(new Font("Times New Roman", Font.BOLD, 20));
     labelTitulo.setBounds(100, 10, 200, 50);
     labelTitulo.setForeground(new Color(0, 70, 140));
-
-        ImageIcon icono = new ImageIcon(Principal.class.getResource("Recurso/Icono_bus.jpg")); 
-        f.setIconImage(icono.getImage());
-
     c.add(labelTitulo);
 
-    
+    // Icono del frame (verifica que la ruta sea correcta y esté en resources)
+    try {
+        ImageIcon icono = new ImageIcon(getClass().getResource("/Recurso/Icono_bus.jpg"));
+        f.setIconImage(icono.getImage());
+    } catch (Exception e) {
+        System.err.println("No se pudo cargar el ícono.");
+    }
+
     JTextField txtUsuario = new JTextField("Usuario");
     txtUsuario.setBounds(100, 80, 200, 30);
     txtUsuario.setForeground(Color.GRAY);
@@ -386,11 +389,10 @@ private  void ingreso_Usuario() {
     });
     c.add(txtUsuario);
 
-   
     JPasswordField txtContrasena = new JPasswordField("Contraseña");
     txtContrasena.setBounds(100, 120, 200, 30);
     txtContrasena.setForeground(Color.GRAY);
-    txtContrasena.setEchoChar((char) 0); // Mostrar texto
+    txtContrasena.setEchoChar((char) 0);
 
     txtContrasena.addFocusListener(new FocusAdapter() {
         @Override
@@ -398,7 +400,7 @@ private  void ingreso_Usuario() {
             if (String.valueOf(txtContrasena.getPassword()).equals("Contraseña")) {
                 txtContrasena.setText("");
                 txtContrasena.setForeground(Color.BLACK);
-                txtContrasena.setEchoChar('*');
+                txtContrasena.setEchoChar('•');
             }
         }
 
@@ -413,55 +415,54 @@ private  void ingreso_Usuario() {
     });
     c.add(txtContrasena);
 
-    // Botón Ingresar
-  JButton btnIngresar = new JButton("Consultar");
-           btnIngresar.setFont(new Font("Segoe UI", Font.BOLD, 16));
-           btnIngresar.setForeground(Color.WHITE);
-           btnIngresar.setBackground(new Color(20, 113, 159));
-           btnIngresar.setBounds(140, 180, 120, 40); 
-  c.add(btnIngresar);
+    // Botón Consultar
+    JButton btnIngresar = new JButton("Consultar");
+    btnIngresar.setFont(new Font("Segoe UI", Font.BOLD, 16));
+    btnIngresar.setForeground(Color.WHITE);
+    btnIngresar.setBackground(new Color(20, 113, 159));
+    btnIngresar.setBounds(140, 180, 120, 40);
+    btnIngresar.setFocusPainted(false);
+    c.add(btnIngresar);
 
-    //Agregar acción al botón Ingresar que consulten  DB 
+    // Hover efecto
+    btnIngresar.addMouseListener(new MouseAdapter() {
+        @Override
+        public void mouseEntered(MouseEvent e) {
+            btnIngresar.setBackground(new Color(114, 182, 216));
+        }
+
+        @Override
+        public void mouseExited(MouseEvent e) {
+            btnIngresar.setBackground(new Color(20, 113, 159));
+        }
+    });
+
+    // Acción del botón
     btnIngresar.addActionListener(new ActionListener() {
         @Override
         public void actionPerformed(ActionEvent e) {
             String usuario = txtUsuario.getText().trim();
             String contrasena = String.valueOf(txtContrasena.getPassword()).trim();
 
-            if (usuario.equals("Usuario") || contrasena.equals("Contraseña")) {
+            if (usuario.equals("Usuario") || contrasena.equals("Contraseña") ||
+                usuario.isEmpty() || contrasena.isEmpty()) {
                 JOptionPane.showMessageDialog(f, "Por favor, complete los campos correctamente.", "Error", JOptionPane.ERROR_MESSAGE);
-            } else {
-              if(validarUsuario(usuario, contrasena)){
-              JOptionPane.showMessageDialog(f, "Ingreso exitoso. Bienvenido " + usuario + " !", "Éxito", JOptionPane.INFORMATION_MESSAGE);
-                menuPrincipal(); // Abrir la ventana principal
-                f.dispose(); // Cerrar la ventana de ingreso
+                return;
+            }
 
-              }else {
-              
-              }
-               
-              
+            if (validarUsuario(usuario, contrasena)) {
+                JOptionPane.showMessageDialog(f, "Ingreso exitoso. Bienvenido " + usuario + "!", "Éxito", JOptionPane.INFORMATION_MESSAGE);
+                f.dispose();
+                menuPrincipal();
+            } else {
+                JOptionPane.showMessageDialog(f, "Usuario o contraseña incorrectos.", "Error", JOptionPane.ERROR_MESSAGE);
             }
         }
     });
-              btnIngresar.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mouseEntered(MouseEvent e) {
-                btnIngresar.setBackground(new Color(114, 182, 216)); 
-            }
-
-            @Override
-            public void mouseExited(MouseEvent e) {
-                btnIngresar.setBackground(new Color(20, 113, 159)); 
-            }
-            @Override
-            public void mouseClicked (MouseEvent e){
-                ingresosPorUnidad();
-            }
-        });
 
     f.setVisible(true);
 }
+
 private boolean validarUsuario(String usuario, String contrasena) {
     Connection conn = null;
     PreparedStatement stmt = null;
