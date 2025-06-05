@@ -22,6 +22,14 @@ public ArrayList<Carreras> arrayCarrera = new ArrayList();
         frame.setResizable(false);
         frame.setLayout(new BorderLayout());
 
+        try {
+        ImageIcon icono = new ImageIcon(getClass().getResource("Recurso/autobus.png"));
+        frame.setIconImage(icono.getImage());
+        } catch (Exception e) {
+     
+        JOptionPane.showMessageDialog(frame, "No se pudo cargar el ícono de la aplicación.", "Error", JOptionPane.ERROR_MESSAGE);
+             }
+
         // Título
         JLabel labelTitulo = new JLabel("<html><center>Reina del Campo S.A.<br>Menú</center></html>", SwingConstants.CENTER);
         labelTitulo.setFont(new Font("Segoe UI", Font.BOLD, 28));
@@ -359,12 +367,14 @@ private void ingreso_Usuario() {
     labelTitulo.setForeground(new Color(0, 70, 140));
     c.add(labelTitulo);
 
-    // Icono del frame (verifica que la ruta sea correcta y esté en resources)
+    
+
     try {
         ImageIcon icono = new ImageIcon(getClass().getResource("/Recurso/Icono_bus.jpg"));
         f.setIconImage(icono.getImage());
     } catch (Exception e) {
-        System.err.println("No se pudo cargar el ícono.");
+     
+        JOptionPane.showMessageDialog(f, "No se pudo cargar el ícono de la aplicación.", "Error", JOptionPane.ERROR_MESSAGE);
     }
 
     JTextField txtUsuario = new JTextField("Usuario");

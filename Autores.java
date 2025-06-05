@@ -1,10 +1,3 @@
-import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.Cursor;
-import java.awt.Dimension;
-import java.awt.Font;
-import java.awt.Image;
-
 import javax.swing.*;
 
 import javax.swing.*;
@@ -26,6 +19,14 @@ public class Autores {
         f.setResizable(false);
         f.getContentPane().setBackground(Color.WHITE);
         f.setLayout(new BorderLayout());
+
+          try {
+        ImageIcon icono = new ImageIcon(getClass().getResource("Recurso/AutorV2.png"));
+        f.setIconImage(icono.getImage());
+        } catch (Exception e) {
+     
+        JOptionPane.showMessageDialog(f, "No se pudo cargar el ícono de la aplicación.", "Error", JOptionPane.ERROR_MESSAGE);
+              }
 
         
         JLabel encabezado = new JLabel("Autores del Proyecto", SwingConstants.CENTER);
