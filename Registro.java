@@ -31,40 +31,43 @@ public class Registro {
 
         JLabel lblTitulo = new JLabel("Registro de Usuarios", SwingConstants.CENTER);
         lblTitulo.setFont(new Font("Segoe UI", Font.BOLD, 24));
-        lblTitulo.setBounds(0, 20, 650, 30);
-        lblTitulo.setForeground(new Color(20, 70, 140));
+        lblTitulo.setBounds(0, 20, f.getWidth(), 30); 
+        lblTitulo.setBounds(0, 0, 650, 50);
+        lblTitulo.setHorizontalAlignment(SwingConstants.CENTER);
+        lblTitulo.setOpaque(true);
+        lblTitulo.setBackground(new Color(230, 240, 250));
         f.add(lblTitulo);
 
         JTextField txtcedula = Campos_Genericos("Cedula");
-        txtcedula.setBounds(120, 30, 400, 30);
+        txtcedula.setBounds(120, 60, 400, 30);
         f.add(txtcedula);
 
         JTextField txtNombre = Campos_Genericos("Nombre");
-        txtNombre.setBounds(120, 70, 400, 30);
+        txtNombre.setBounds(120, 100, 400, 30);
         f.add(txtNombre);
 
         JTextField txtNombre2 = Campos_Genericos("Segundo Nombre (opcional)");
-        txtNombre2.setBounds(120, 110, 400, 30);
+        txtNombre2.setBounds(120, 140, 400, 30);
         f.add(txtNombre2);
 
         JTextField txtApellido = Campos_Genericos("Primer Apellido");
-        txtApellido.setBounds(120, 150, 400, 30);
+        txtApellido.setBounds(120, 180, 400, 30);
         f.add(txtApellido);
 
         JTextField txtApellido2 = Campos_Genericos("Segundo Apellido");
-        txtApellido2.setBounds(120, 190, 400, 30);
+        txtApellido2.setBounds(120, 220, 400, 30);
         f.add(txtApellido2);
 
         JTextField txtLogin = Campos_Genericos("Login");
-        txtLogin.setBounds(120, 230, 400, 30);
+        txtLogin.setBounds(120, 260, 400, 30);
         f.add(txtLogin);
 
         JTextField txtContrasena = Campos_Genericos("Contraseña");
-        txtContrasena.setBounds(120, 270, 400, 30);
+       txtContrasena.setBounds(120, 300, 400, 30);
         f.add(txtContrasena);
 
         JPasswordField txtConta_Confirmacion = new JPasswordField("Confirmar Contraseña");
-        txtConta_Confirmacion.setBounds(120, 310, 400, 30);
+       txtConta_Confirmacion.setBounds(120, 340, 400, 30);
         txtConta_Confirmacion.setForeground(Color.GRAY);
         txtConta_Confirmacion.setEchoChar((char) 0);
 
@@ -92,7 +95,7 @@ public class Registro {
 
         
         JButton btnRegistrar = new JButton("Registrar");
-        btnRegistrar.setBounds(120, 370, 180, 40);
+       btnRegistrar.setBounds(120, 390, 180, 40);
         btnRegistrar.setFont(new Font("Segoe UI", Font.BOLD, 16));
         btnRegistrar.setBackground(new Color(20, 113, 159));
         btnRegistrar.setForeground(Color.WHITE);
@@ -127,7 +130,7 @@ public class Registro {
 
        
         JButton btnVolver = new JButton("Volver");
-        btnVolver.setBounds(340, 370, 180, 40);
+        btnVolver.setBounds(340, 390, 180, 40);
         btnVolver.setFont(new Font("Segoe UI", Font.BOLD, 16));
         btnVolver.setBackground(new Color(114, 182, 216));
         btnVolver.setForeground(Color.WHITE);
@@ -158,7 +161,8 @@ public class Registro {
             // 504570429 
             return false;
         }
-
+        
+        existencia_Usuario(datos); 
 
         if(valido){
           DBRegistro(datos);
@@ -168,6 +172,39 @@ public class Registro {
 
 
     }
+
+private boolean existencia_Usuario (String[] datos) throws SQLException {
+    Connection conn = null;
+    PreparedStatement stmt = null;
+    ResultSet rs = null;
+    boolean isValid = true;
+
+     // Verificar si el usuario ya existe en la base de datos
+    try {       
+        conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/proyecto1", "root", "Tree23815");
+        String sql = "SELECT * FROM autentificacion WHERE Cedula = ? OR login = ?";
+        stmt = conn.prepareStatement(sql);
+        stmt.setString(1, datos[0]);
+        stmt.setString(2, datos[6]);
+        rs = stmt.executeQuery();
+
+        if (rs.next()) {
+            JOptionPane.showMessageDialog(f, "El usuario ya existe.", "Error", JOptionPane.ERROR_MESSAGE);
+            return true; 
+        }
+
+     }catch (SQLException e) {
+        e.printStackTrace();
+        JOptionPane.showMessageDialog(f, "Error al verificar el usuario: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+        isValid = false;
+    } finally { 
+        if (rs != null) try { rs.close(); } catch (SQLException e) { e.printStackTrace(); }
+        if (stmt != null) try { stmt.close(); } catch (SQLException e) { e.printStackTrace(); }
+        if (conn != null) try { conn.close(); } catch (SQLException e) { e.printStackTrace(); }
+    }
+     return isValid;
+  
+}
     private  void DBRegistro(String[] datos) throws SQLException {
     Connection conn = null;
     PreparedStatement stmt = null;
