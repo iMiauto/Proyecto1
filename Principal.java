@@ -10,6 +10,12 @@ import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
 import java.util.*;
 import java.sql.*;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+
 public class Principal extends JFrame implements Serializable{
 public ArrayList<Carreras> arrayCarrera = new ArrayList(); 
 
@@ -303,20 +309,23 @@ public void carrera() {
         @Override
         public void actionPerformed(ActionEvent e) {
             
-            String nombreChofer = Chofer.getText().trim();
-            if (nombreChofer.isEmpty()) {
-                JOptionPane.showMessageDialog(frame, "Ingrese un nombre válido.", "Error", JOptionPane.ERROR_MESSAGE);
-                return;
-            }
+          String nombreChofer = Chofer.getText().trim();
+String codigoTexto = numeroUnidad.getText().trim();
+boolean caniasLiberia = bCañas_Liberia.isSelected();
+boolean liberiaCanias = bLiberia_Cañas.isSelected();
 
-          
-            int numeroComparacio;
-            try {
-                numeroComparacio = Integer.parseInt(numeroUnidad.getText().trim());
-            } catch (NumberFormatException ex) {
-                JOptionPane.showMessageDialog(frame, "Ingrese un número válido para la unidad.", "Error", JOptionPane.ERROR_MESSAGE);
-                return;
-            }
+if (nombreChofer.isEmpty() || codigoTexto.isEmpty() || (!caniasLiberia && !liberiaCanias)) {
+    JOptionPane.showMessageDialog(frame, "Complete todos los campos y seleccione un sentido.", "Error", JOptionPane.ERROR_MESSAGE);
+    return;
+}
+
+int idCarrera;
+try {
+    idCarrera = Integer.parseInt(codigoTexto);
+} catch (NumberFormatException ex) {
+    JOptionPane.showMessageDialog(frame, "El código de unidad debe ser numérico.", "Error", JOptionPane.ERROR_MESSAGE);
+    return;
+}
 
           
             if (arrayCarrera.isEmpty()) {
@@ -333,19 +342,35 @@ public void carrera() {
             if ( validacion == false) {
                 JOptionPane.showMessageDialog(frame, "El usuario o número de unidad son incorrectos", "Error", JOptionPane.ERROR_MESSAGE);
             }
+try {
+    Connection conn = DriverManager.getConnection(
+        "jdbc:mysql://localhost:3306/tu_basedatos", "root", "tu_contraseña");
 
-            if(validacion == true){
-               if (bCañas_Liberia.isSelected()) {
-                Carreras controlCarreras = new Cañas_Liberia(1, "No necesario", 2, 1.1);
-                arrayCarrera.add(controlCarreras);
-            }
-            if (bLiberia_Cañas.isSelected()) {
-              
-                Carreras controlCarreras = new liberia_Cañas(1, "No necesario", 2, 1.2);    
-                arrayCarrera.add(controlCarreras);
-            }  
-            }
-           
+    String sql = "SELECT * FROM carreras WHERE nombreChofer = ? AND idCarreras = ?";
+    PreparedStatement ps = conn.prepareStatement(sql);
+    ps.setString(1, nombreChofer);
+    ps.setInt(2, idCarrera);
+    ResultSet rs = ps.executeQuery();
+
+    if (rs.next()) {
+        if (caniasLiberia) {
+            new Cañas_Liberia(idCarrera, nombreChofer, 1, 1.1, conn).setVisible(true);
+        } else if (liberiaCanias) {
+            new liberia_Cañas(idCarrera, nombreChofer, 2, 1.2, conn).setVisible(true);
+        }
+        frame.dispose(); // Cerrar la ventana actual si ya no se usa
+    } else {
+        JOptionPane.showMessageDialog(frame, "El usuario o número de unidad son incorrectos", "Error", JOptionPane.ERROR_MESSAGE);
+    }
+
+    ps.close();
+    // conn se pasa a la siguiente ventana, no se cierra aquí
+
+} catch (SQLException ex) {
+    ex.printStackTrace();
+    JOptionPane.showMessageDialog(frame, "Error de conexión a la base de datos.", "Error", JOptionPane.ERROR_MESSAGE);
+}
+
         }
     });
 
