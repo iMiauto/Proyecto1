@@ -317,9 +317,9 @@ public void carrera() {
 
             int sentido = caniasLiberia ? 2 : 1; // 2 = Cañas-Liberia, 1 = Liberia-Cañas
 
-            try {
-                Connection conn = DriverManager.getConnection(
-                    "jdbc:mysql://localhost:3306/proyecto1", "root", "root");
+        try {
+            Connection conn = DriverManager.getConnection(
+                "jdbc:mysql://localhost:3306/proyecto1", "root", "Tree23815");
 
                 String sql = "SELECT * FROM carreras WHERE nombreChofer = ? AND idCarreras = ?";
                 PreparedStatement ps = conn.prepareStatement(sql);

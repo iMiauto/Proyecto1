@@ -1,14 +1,10 @@
-import java.awt.*;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import javax.swing.table.DefaultTableModel;
+import java.sql.*;
+import java.awt.*;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 
 public class DB {
 
@@ -22,9 +18,22 @@ public class DB {
         frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         frame.setLocationRelativeTo(null);
 
+        JButton btnRegresar = new JButton("Regresar");
+        btnRegresar.setBackground(new Color(180, 60, 60));
+        btnRegresar.setForeground(Color.WHITE);
+        btnRegresar.setFocusPainted(false);
+        btnRegresar.setCursor(new Cursor(Cursor.HAND_CURSOR));
+        btnRegresar.setPreferredSize(new Dimension(120, 35));
+        btnRegresar.addActionListener(e -> frame.dispose());
+
+        JPanel panelInferior = new JPanel();
+        panelInferior.setBorder(new EmptyBorder(10, 10, 10, 10));
+        panelInferior.add(btnRegresar);
+        frame.add(panelInferior, BorderLayout.SOUTH);
+
         JTabbedPane pestañas = new JTabbedPane();
 
-        // Panel de CARRERAS
+        // COMPONENTES CARRERAS
         JPanel panelCarreras = new JPanel(new BorderLayout(10, 10));
         panelCarreras.setBorder(new EmptyBorder(10, 10, 10, 10));
 
@@ -47,14 +56,18 @@ public class DB {
         controlesCarreras.add(txtLC);
 
         JPanel botonesCarreras = new JPanel();
-        botonesCarreras.add(crearBoton("Insertar"));
-        botonesCarreras.add(crearBoton("Actualizar"));
-        botonesCarreras.add(crearBoton("Eliminar"));
-        botonesCarreras.add(crearBoton("Ver Todos"));
+        JButton btnInsertarCarrera = crearBoton("Insertar");
+        JButton btnActualizarCarrera = crearBoton("Actualizar");
+        JButton btnEliminarCarrera = crearBoton("Eliminar");
+        JButton btnVerCarrera = crearBoton("Ver Todos");
+        botonesCarreras.add(btnInsertarCarrera);
+        botonesCarreras.add(btnActualizarCarrera);
+        botonesCarreras.add(btnEliminarCarrera);
+        botonesCarreras.add(btnVerCarrera);
 
         JTable tablaCarreras = new JTable(new DefaultTableModel(
-            new Object[][]{},
-            new String[]{"ID", "Chofer", "Pasajeros", "Cañas_Lib", "Liberia_Cañas"}
+                new Object[][]{},
+                new String[]{"ID", "Chofer", "Pasajeros", "Cañas_Lib", "Liberia_Cañas"}
         ));
         JScrollPane scrollCarreras = new JScrollPane(tablaCarreras);
 
@@ -66,7 +79,7 @@ public class DB {
         panelCarreras.add(centroCarreras, BorderLayout.WEST);
         panelCarreras.add(scrollCarreras, BorderLayout.CENTER);
 
-        // Panel de USUARIOS
+        // COMPONENTES USUARIOS
         JPanel panelUsuarios = new JPanel(new BorderLayout(10, 10));
         panelUsuarios.setBorder(new EmptyBorder(10, 10, 10, 10));
 
@@ -95,14 +108,18 @@ public class DB {
         controlesUsuarios.add(txtPassword);
 
         JPanel botonesUsuarios = new JPanel();
-        botonesUsuarios.add(crearBoton("Insertar"));
-        botonesUsuarios.add(crearBoton("Actualizar"));
-        botonesUsuarios.add(crearBoton("Eliminar"));
-        botonesUsuarios.add(crearBoton("Ver Todos"));
+        JButton btnInsertarUsuario = crearBoton("Insertar");
+        JButton btnActualizarUsuario = crearBoton("Actualizar");
+        JButton btnEliminarUsuario = crearBoton("Eliminar");
+        JButton btnVerUsuario = crearBoton("Ver Todos");
+        botonesUsuarios.add(btnInsertarUsuario);
+        botonesUsuarios.add(btnActualizarUsuario);
+        botonesUsuarios.add(btnEliminarUsuario);
+        botonesUsuarios.add(btnVerUsuario);
 
         JTable tablaUsuarios = new JTable(new DefaultTableModel(
-            new Object[][]{},
-            new String[]{"Cédula", "Nombre1", "Nombre2", "Apellido1", "Apellido2", "Login", "Contraseña"}
+                new Object[][]{},
+                new String[]{"Cédula", "Nombre1", "Nombre2", "Apellido1", "Apellido2", "Login", "Contraseña"}
         ));
         JScrollPane scrollUsuarios = new JScrollPane(tablaUsuarios);
 
@@ -116,141 +133,175 @@ public class DB {
 
         pestañas.add("Carreras", panelCarreras);
         pestañas.add("Autentificación", panelUsuarios);
-
         frame.add(pestañas);
         frame.setVisible(true);
 
-        botonesUsuarios.getComponent(0).addMouseListener(new MouseAdapter() {
-    @Override
-    public void mouseClicked(MouseEvent e) {
-        try (Connection conn =  conectarDB()) {
-            String sql = "INSERT INTO autentificacion (Cedula, Nombre1, Nombre2, Apellido1, Apellido2, Login, Contraseña) VALUES (?, ?, ?, ?, ?, ?, ?)";
-            PreparedStatement stmt = conn.prepareStatement(sql);
-            stmt.setString(1, txtCedula.getText().trim());
-            stmt.setString(2, txtNombre1.getText().trim());
-            stmt.setString(3, txtNombre2.getText().trim());
-            stmt.setString(4, txtApellido1.getText().trim());
-            stmt.setString(5, txtApellido2.getText().trim());
-            stmt.setString(6, txtLogin.getText().trim());
-            stmt.setString(7, txtPassword.getText().trim());
-
-            int filas = stmt.executeUpdate();
-            if (filas > 0) {
-                JOptionPane.showMessageDialog(null, "Usuario registrado correctamente.");
-                // Opcional: Limpiar campos
+        // Eventos
+        btnInsertarCarrera.addActionListener(e -> {
+            try (Connection conn = conectarDB()) {
+                String sql = "INSERT INTO carreras (idCarreras, nombreChofer, pasajeros, Cañas_Liberia_Total, Liberia_Cañas_Total) VALUES (?, ?, ?, ?, ?)";
+                PreparedStatement stmt = conn.prepareStatement(sql);
+                stmt.setInt(1, Integer.parseInt(txtIdCarrera.getText().trim()));
+                stmt.setString(2, txtChofer.getText().trim());
+                stmt.setString(3, txtPasajeros.getText().trim());
+                stmt.setString(4, txtCL.getText().trim());
+                stmt.setString(5, txtLC.getText().trim());
+                stmt.executeUpdate();
+                JOptionPane.showMessageDialog(null, "Carrera registrada correctamente.");
+            } catch (Exception ex) {
+                JOptionPane.showMessageDialog(null, "Error: " + ex.getMessage());
             }
-        } catch (SQLException ex) {
-            ex.printStackTrace();
-            JOptionPane.showMessageDialog(null, "Error al insertar: " + ex.getMessage());
-        }
-    }
-});
+            txtIdCarrera.setText(""); txtChofer.setText(""); txtPasajeros.setText(""); txtCL.setText(""); txtLC.setText("");
+        });
 
-    botonesUsuarios.getComponent(3).addMouseListener(new MouseAdapter() {
-        @Override
-        public void mouseClicked(MouseEvent e) {
+        btnActualizarCarrera.addActionListener(e -> {
+            try (Connection conn = conectarDB()) {
+                String sql = "UPDATE carreras SET nombreChofer=?, pasajeros=?, Cañas_Liberia_Total=?, Liberia_Cañas_Total=? WHERE idCarreras=?";
+                PreparedStatement stmt = conn.prepareStatement(sql);
+                stmt.setString(1, txtChofer.getText().trim());
+                stmt.setString(2, txtPasajeros.getText().trim());
+                stmt.setString(3, txtCL.getText().trim());
+                stmt.setString(4, txtLC.getText().trim());
+                stmt.setInt(5, Integer.parseInt(txtIdCarrera.getText().trim()));
+                stmt.executeUpdate();
+                JOptionPane.showMessageDialog(null, "Carrera actualizada correctamente.");
+            } catch (Exception ex) {
+                JOptionPane.showMessageDialog(null, "Error: " + ex.getMessage());
+            }
+            txtIdCarrera.setText(""); txtChofer.setText(""); txtPasajeros.setText(""); txtCL.setText(""); txtLC.setText("");
+        });
+
+        btnEliminarCarrera.addActionListener(e -> {
+            try (Connection conn = conectarDB()) {
+                String sql = "DELETE FROM carreras WHERE idCarreras=?";
+                PreparedStatement stmt = conn.prepareStatement(sql);
+                stmt.setInt(1, Integer.parseInt(txtIdCarrera.getText().trim()));
+                stmt.executeUpdate();
+                JOptionPane.showMessageDialog(null, "Carrera eliminada correctamente.");
+            } catch (Exception ex) {
+                JOptionPane.showMessageDialog(null, "Error: " + ex.getMessage());
+            }
+            txtIdCarrera.setText(""); txtChofer.setText(""); txtPasajeros.setText(""); txtCL.setText(""); txtLC.setText("");
+        });
+
+        btnInsertarUsuario.addActionListener(e -> {
+            try (Connection conn = conectarDB()) {
+                String sql = "INSERT INTO autentificacion (Cedula, Nombre1, Nombre2, Apellido1, Apellido2, Login, Contraseña) VALUES (?, ?, ?, ?, ?, ?, ?)";
+                PreparedStatement stmt = conn.prepareStatement(sql);
+                stmt.setString(1, txtCedula.getText().trim());
+                stmt.setString(2, txtNombre1.getText().trim());
+                stmt.setString(3, txtNombre2.getText().trim());
+                stmt.setString(4, txtApellido1.getText().trim());
+                stmt.setString(5, txtApellido2.getText().trim());
+                stmt.setString(6, txtLogin.getText().trim());
+                stmt.setString(7, txtPassword.getText().trim());
+                stmt.executeUpdate();
+                JOptionPane.showMessageDialog(null, "Usuario registrado correctamente.");
+            } catch (Exception ex) {
+                JOptionPane.showMessageDialog(null, "Error: " + ex.getMessage());
+            }
+            txtCedula.setText(""); txtNombre1.setText(""); txtNombre2.setText(""); txtApellido1.setText(""); txtApellido2.setText(""); txtLogin.setText(""); txtPassword.setText("");
+        });
+
+        btnActualizarUsuario.addActionListener(e -> {
+            try (Connection conn = conectarDB()) {
+                String sql = "UPDATE autentificacion SET Nombre1=?, Nombre2=?, Apellido1=?, Apellido2=?, Login=?, Contraseña=? WHERE Cedula=?";
+                PreparedStatement stmt = conn.prepareStatement(sql);
+                stmt.setString(1, txtNombre1.getText().trim());
+                stmt.setString(2, txtNombre2.getText().trim());
+                stmt.setString(3, txtApellido1.getText().trim());
+                stmt.setString(4, txtApellido2.getText().trim());
+                stmt.setString(5, txtLogin.getText().trim());
+                stmt.setString(6, txtPassword.getText().trim());
+                stmt.setString(7, txtCedula.getText().trim());
+                stmt.executeUpdate();
+                JOptionPane.showMessageDialog(null, "Usuario actualizado correctamente.");
+            } catch (Exception ex) {
+                JOptionPane.showMessageDialog(null, "Error: " + ex.getMessage());
+            }
+            txtCedula.setText(""); txtNombre1.setText(""); txtNombre2.setText(""); txtApellido1.setText(""); txtApellido2.setText(""); txtLogin.setText(""); txtPassword.setText("");
+        });
+
+        btnEliminarUsuario.addActionListener(e -> {
+            try (Connection conn = conectarDB()) {
+                String sql = "DELETE FROM autentificacion WHERE Cedula=?";
+                PreparedStatement stmt = conn.prepareStatement(sql);
+                stmt.setString(1, txtCedula.getText().trim());
+                stmt.executeUpdate();
+                JOptionPane.showMessageDialog(null, "Usuario eliminado correctamente.");
+            } catch (Exception ex) {
+                JOptionPane.showMessageDialog(null, "Error: " + ex.getMessage());
+            }
+            txtCedula.setText(""); txtNombre1.setText(""); txtNombre2.setText(""); txtApellido1.setText(""); txtApellido2.setText(""); txtLogin.setText(""); txtPassword.setText("");
+        });
+
+        btnVerCarrera.addActionListener(e -> {
+            DefaultTableModel model = (DefaultTableModel) tablaCarreras.getModel();
+            model.setRowCount(0);
+            try (Connection conn = conectarDB()) {
+                String sql = "SELECT * FROM carreras";
+                PreparedStatement stmt = conn.prepareStatement(sql);
+                ResultSet rs = stmt.executeQuery();
+                while (rs.next()) {
+                    model.addRow(new Object[]{
+                            rs.getInt("idCarreras"),
+                            rs.getString("nombreChofer"),
+                            rs.getString("pasajeros"),
+                            rs.getString("Cañas_Liberia_Total"),
+                            rs.getString("Liberia_Cañas_Total")
+                    });
+                }
+            } catch (Exception ex) {
+                JOptionPane.showMessageDialog(null, "Error: " + ex.getMessage());
+            }
+        });
+
+        btnVerUsuario.addActionListener(e -> {
             DefaultTableModel model = (DefaultTableModel) tablaUsuarios.getModel();
-            model.setRowCount(0); 
-
+            model.setRowCount(0);
             try (Connection conn = conectarDB()) {
                 String sql = "SELECT * FROM autentificacion";
                 PreparedStatement stmt = conn.prepareStatement(sql);
                 ResultSet rs = stmt.executeQuery();
-
                 while (rs.next()) {
-                    Object[] fila = {
-                        rs.getString("Cedula"),
-                        rs.getString("Nombre1"),
-                        rs.getString("Nombre2"),
-                        rs.getString("Apellido1"),
-                        rs.getString("Apellido2"),
-                        rs.getString("Login"),
-                        rs.getString("Contraseña")
-                    };
-                    model.addRow(fila);
+                    model.addRow(new Object[]{
+                            rs.getString("Cedula"),
+                            rs.getString("Nombre1"),
+                            rs.getString("Nombre2"),
+                            rs.getString("Apellido1"),
+                            rs.getString("Apellido2"),
+                            rs.getString("Login"),
+                            rs.getString("Contraseña")
+                    });
                 }
-
-            } catch (SQLException ex) {
-                ex.printStackTrace();
-                JOptionPane.showMessageDialog(null, "Error al consultar registros: " + ex.getMessage());
+            } catch (Exception ex) {
+                JOptionPane.showMessageDialog(null, "Error: " + ex.getMessage());
             }
-        }
-    });
-
-botonesUsuarios.getComponent(1).addMouseListener(new MouseAdapter() {
-    @Override
-    public void mouseClicked(MouseEvent e) {
-        String cedula = txtCedula.getText().trim();
-        String nombre1 = txtNombre1.getText().trim();
-        String nombre2 = txtNombre2.getText().trim();
-        String apellido1 = txtApellido1.getText().trim();
-        String apellido2 = txtApellido2.getText().trim();
-        String login = txtLogin.getText().trim();
-        String contraseña = txtPassword.getText().trim();
-
-        if (cedula.isEmpty()) {
-            JOptionPane.showMessageDialog(null, "Debe ingresar la cédula del usuario que desea actualizar.", "Campo obligatorio", JOptionPane.WARNING_MESSAGE);
-            return;
-        }
-
-        try (Connection conn = conectarDB()) {
-            String sql = "UPDATE autentificacion SET Nombre1=?, Nombre2=?, Apellido1=?, Apellido2=?, Login=?, Contraseña=? WHERE Cedula=?";
-            PreparedStatement stmt = conn.prepareStatement(sql);
-            stmt.setString(1, nombre1);
-            stmt.setString(2, nombre2);
-            stmt.setString(3, apellido1);
-            stmt.setString(4, apellido2);
-            stmt.setString(5, login);
-            stmt.setString(6, contraseña);
-            stmt.setString(7, cedula);
-
-            int filas = stmt.executeUpdate();
-            if (filas > 0) {
-                JOptionPane.showMessageDialog(null, "Usuario actualizado correctamente.");
-            } else {
-                JOptionPane.showMessageDialog(null, "No se encontró un usuario con esa cédula.");
-            }
-        } catch (SQLException ex) {
-            ex.printStackTrace();
-            JOptionPane.showMessageDialog(null, "Error al actualizar el usuario: " + ex.getMessage());
-        }
-    }
-});
+        });
 
 
-        
+
+
     }
 
-  private java.sql.Connection conectarDB() throws SQLException {
-    String url = "jdbc:mysql://localhost:3306/proyecto1";
-    String usuario = "root";
-    String contraseña = "root";
-    return DriverManager.getConnection(url, usuario, contraseña);
-}
-
+    private Connection conectarDB() throws SQLException {
+        return DriverManager.getConnection("jdbc:mysql://localhost:3306/proyecto1", "root", "Tree23815");
+    }
 
     private JButton crearBoton(String texto) {
         JButton btn = new JButton(texto);
         Color base = new Color(20, 113, 159);
         Color hover = new Color(114, 182, 216);
-
         btn.setBackground(base);
         btn.setForeground(Color.WHITE);
         btn.setFocusPainted(false);
         btn.setCursor(new Cursor(Cursor.HAND_CURSOR));
-
         btn.addMouseListener(new MouseAdapter() {
             @Override
-            public void mouseEntered(MouseEvent e) {
-                btn.setBackground(hover);
-            }
-
+            public void mouseEntered(MouseEvent e) { btn.setBackground(hover); }
             @Override
-            public void mouseExited(MouseEvent e) {
-                btn.setBackground(base);
-            }
+            public void mouseExited(MouseEvent e) { btn.setBackground(base); }
         });
-
         return btn;
     }
 }
