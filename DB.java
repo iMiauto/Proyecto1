@@ -1,5 +1,3 @@
-
-
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import javax.swing.table.DefaultTableModel;
@@ -15,7 +13,6 @@ public class DB {
     }
 
     public void mostrarGUI() {
-        JFrame frame = new JFrame("Administración de Base de Datos");
         JFrame frame = new JFrame("Administración de Base de Datos");
         frame.setSize(900, 600);
         frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
