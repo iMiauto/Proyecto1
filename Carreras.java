@@ -1,25 +1,28 @@
 
-import java.awt.Color;
-import java.awt.Container;
-import java.awt.Font;
-import java.awt.Frame;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import javax.swing.*; 
 import java.io.*;
+import javax.swing.*;
 
-public abstract class Carreras implements Serializable {
+public abstract class Carreras extends JFrame implements Serializable {
+    
 
-    protected int pasajeros, totalPasajeros, unidad;
+    protected int pasajeros, totalPasajeros;
     protected static double  totalGanancias;
     protected double totalCarrera;
     protected double totalTiket; 
-    protected String sentido, nombreUnidad;
+    protected String nombreUnidad;
+    protected int unidad;
+protected String nombreChofer;
+protected int sentido;
+protected double precio;
 
 
-    public Carreras(int u, String n, int s, double p) {
-    
-    }
+
+public Carreras(int unidad, String nombreChofer, int sentido, double precio) {
+    this.unidad = unidad;
+    this.nombreChofer = nombreChofer;
+    this.sentido = sentido;
+    this.precio = precio;
+}
     public static  void calcularGanancias(double totalTiket) {
         totalGanancias += totalTiket;
     }
@@ -75,11 +78,11 @@ public abstract class Carreras implements Serializable {
         this.totalTiket = totalTiket;
     }
     
-    public String getSentido() {
+    public int getSentido() {
         return sentido;
     }
     
-    public void setSentido(String sentido) {
+    public void setSentido(int sentido) {
         this.sentido = sentido;
     }
     

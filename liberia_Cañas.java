@@ -5,18 +5,20 @@ import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.sql.Connection;
-
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JTextField;
+
 public class liberia_Cañas extends Carreras{
     //Atributos
     public double  totalGanancias_LiberiaCañas;
 
-   private Connection conn;
+private Connection conn;
 private int idCarrera;
 private String nombreChofer;
 private double precio;
@@ -44,15 +46,15 @@ public liberia_Cañas(int idCarrera, String nombreChofer, int sentido, double pr
 
     @Override
     public void sentidoCarera() {
-       System.out.println("Carrera en el sentido Liberia - Cañas.");
+    System.out.println("Carrera en el sentido Liberia - Cañas.");
     }
 
     @Override
-   
+
         public void inicioCarrera() {
-            totalTiket=0; 
-             pasajeros =0; 
-             
+            totalTiket=0;
+            pasajeros =0;
+            
             JFrame frame = new JFrame("Iniciar Carrera");
             frame.setResizable(false);
             frame.setSize(400, 300);
@@ -70,31 +72,31 @@ public liberia_Cañas(int idCarrera, String nombreChofer, int sentido, double pr
             
         
             String[] paradas = new String[]{"El salto (400 colones)", "Pijije (550 colones)", "Bagaces (800 colones)", 
-                                       "Montenegro (1200 colones)", "Entrada Upala (1200 colones)", "Los Pumas (1600 colones)", 
-                                       "Cañas (1800 colones)"};
-             double[] tarifas = new double[]{400, 550, 800, 1200, 1200, 1600, 1800};
-                sentido = "Cañas-Liberia";
-          
+                                    "Montenegro (1200 colones)", "Entrada Upala (1200 colones)", "Los Pumas (1600 colones)", 
+                                    "Cañas (1800 colones)"};
+            double[] tarifas = new double[]{400, 550, 800, 1200, 1200, 1600, 1800};
+                // sentido = "Cañas-Liberia"; // Removed: sentido is likely an int, not a String
+        
             
         
-           
+        
             labelDestino = new JLabel("Destino:");
             labelDestino.setFont(new Font("Times New Roman", Font.BOLD, 14));
             labelDestino.setBounds(20, 20, 100, 30);
             contenedor.add(labelDestino);
         
-           
+        
             comboDestino = new JComboBox<>(paradas);
             comboDestino.setBounds(130, 20, 220, 30);
             contenedor.add(comboDestino);
         
-           
+        
             labelCantidad = new JLabel("Cantidad de pasajeros:");
             labelCantidad.setFont(new Font("Times New Roman", Font.BOLD, 14));
             labelCantidad.setBounds(20, 70, 200, 30);
             contenedor.add(labelCantidad);
         
-          
+        
             fieldCantidad = new JTextField();
             fieldCantidad.setBounds(200, 70, 150, 30);
             contenedor.add(fieldCantidad);
@@ -113,51 +115,60 @@ public liberia_Cañas(int idCarrera, String nombreChofer, int sentido, double pr
             terminar.setForeground(Color.WHITE);
             contenedor.add(terminar);
         
-           
+        
             pagar.addActionListener(new ActionListener() {
-                @Override
-                public void actionPerformed(ActionEvent e) {
-                 boolean validacion = true; 
-                 double valoTickets; 
-                 int indice = 0; 
-                 String opcionSelec = (String) comboDestino.getSelectedItem(); 
-                 try{
-                 pasajeros = Integer.parseInt(fieldCantidad.getText().trim());
-                 if (pasajeros <=0){
-                     throw new NumberFormatException (); 
-                 }
-                 }catch (NumberFormatException ex){
-                     JOptionPane.showMessageDialog(frame , "Ingrese cantidad de pasajeros valido", "Error", JOptionPane.ERROR_MESSAGE);
-                     validacion = false; 
-                 }
-                 
-                 if(comboDestino == null){
-                     JOptionPane.showMessageDialog(frame, "Ingrese un destino valido", "Error", JOptionPane.ERROR_MESSAGE);
-                     validacion = false; 
-                 }
-                 
-                 for(String parada : paradas){
-        
-                    for (int i =0; i<paradas.length; i++){
-        
-                        if (opcionSelec.equals(paradas[i])){
-                            indice = i; 
-                        }
-                    }
-                 }
-                 
-                 
-                 if (validacion == true){
-                    totalPasajeros += pasajeros;
-                     totalTiket = tarifas[indice]*pasajeros; 
-                     mostrarFactura(paradas[indice], tarifas[indice],totalTiket);
-                     CalcularPorSentido(sentido, totalTiket);
-                 }
-                 
-                 
-                 
-                }
-            });
+    @Override
+    public void actionPerformed(ActionEvent e) {
+        boolean validacion = true;
+        int indice = 0;
+        String opcionSelec = (String) comboDestino.getSelectedItem();
+
+        try {
+            pasajeros = Integer.parseInt(fieldCantidad.getText().trim());
+            if (pasajeros <= 0) {
+                throw new NumberFormatException();
+            }
+        } catch (NumberFormatException ex) {
+            JOptionPane.showMessageDialog(frame, "Ingrese una cantidad válida de pasajeros", "Error", JOptionPane.ERROR_MESSAGE);
+            validacion = false;
+        }
+
+        if (comboDestino == null || opcionSelec == null) {
+            JOptionPane.showMessageDialog(frame, "Seleccione un destino válido", "Error", JOptionPane.ERROR_MESSAGE);
+            validacion = false;
+        }
+
+        for (int i = 0; i < paradas.length; i++) {
+            if (opcionSelec.equals(paradas[i])) {
+                indice = i;
+            }
+        }
+
+        if (validacion) {
+            double total = pasajeros * precio;
+
+            try {
+                String sql = "UPDATE carreras SET Liberia_Cañas_Total = ?, Pasajeros = ? WHERE idCarreras = ? AND nombreChofer = ?";
+                PreparedStatement ps = conn.prepareStatement(sql);
+                ps.setDouble(1, total);
+                ps.setInt(2, pasajeros);
+                ps.setInt(3, idCarrera);
+                ps.setString(4, nombreChofer);
+
+                ps.executeUpdate();
+                ps.close();
+
+                mostrarFactura(paradas[indice], precio, total);
+                JOptionPane.showMessageDialog(frame, "Datos guardados correctamente en la base de datos.");
+
+            } catch (SQLException ex) {
+                ex.printStackTrace();
+                JOptionPane.showMessageDialog(frame, "Error al guardar en la base de datos.", "Error", JOptionPane.ERROR_MESSAGE);
+            }
+        }
+    }
+});
+
         
             
             terminar.addActionListener(new ActionListener() {
@@ -169,7 +180,7 @@ public liberia_Cañas(int idCarrera, String nombreChofer, int sentido, double pr
                 }
             });
         
-           
+        
             frame.setVisible(true);
         }
         
@@ -188,10 +199,10 @@ public liberia_Cañas(int idCarrera, String nombreChofer, int sentido, double pr
             }
             @Override
             public String toString() {
-                return "Cañas-Liberia" + "\n" 
-                +  "totalTiket="  + "\n" 
-                + " totalGanancias_CañasLiberia=" + getTotalGanancias() 
-                + "pasajeros=" + getTotalPasajeros()  + "\n" ; 
+                return "Cañas-Liberia" + "\n"
+                +  "totalTiket="  + "\n"
+                + " totalGanancias_CañasLiberia=" + getTotalGanancias()
+                + "pasajeros=" + getTotalPasajeros()  + "\n" ;
                 
             }
     

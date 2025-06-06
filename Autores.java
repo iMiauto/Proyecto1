@@ -1,13 +1,11 @@
-import javax.swing.*;
-
-import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
-import java.awt.image.BufferedImage;
 import java.awt.geom.Ellipse2D;
+import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import javax.imageio.ImageIO;
+import javax.swing.*;
 
 public class Autores {
 
@@ -20,13 +18,13 @@ public class Autores {
         f.getContentPane().setBackground(Color.WHITE);
         f.setLayout(new BorderLayout());
 
-          try {
+        try {
         ImageIcon icono = new ImageIcon(getClass().getResource("Recurso/AutorV2.png"));
         f.setIconImage(icono.getImage());
         } catch (Exception e) {
-     
+    
         JOptionPane.showMessageDialog(f, "No se pudo cargar el ícono de la aplicación.", "Error", JOptionPane.ERROR_MESSAGE);
-              }
+            }
 
         
         JLabel encabezado = new JLabel("Autores del Proyecto", SwingConstants.CENTER);
@@ -52,11 +50,11 @@ public class Autores {
         panelBoton.add(btnVolver);
         f.add(panelBoton, BorderLayout.SOUTH);
 
-       
+    
         JPanel panelIzquierdo = crearPanelAutores("Roberth Ponce Juárez", "C4I72", "Recurso/Roberh.jpg");
         JPanel panelDerecho = crearPanelAutores("Benjamín Pizarro Chavez", "C4I460", "Recurso/Roberh.jpg");
 
-       
+    
         JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, panelIzquierdo, panelDerecho);
         splitPane.setResizeWeight(0.5);
         splitPane.setDividerSize(2);
@@ -107,11 +105,11 @@ public class Autores {
             return new ImageIcon(imagenCircular);
         } catch (IOException e) {
             System.err.println("Error al cargar imagen: " + ruta);
-            return new ImageIcon(); 
+            return new ImageIcon();
         }
     }
 
-   
+
 
 
 
