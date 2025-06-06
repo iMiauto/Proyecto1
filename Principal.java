@@ -352,16 +352,7 @@ try {
     ps.setInt(2, idCarrera);
     ResultSet rs = ps.executeQuery();
 
-    if (rs.next()) {
-        if (caniasLiberia) {
-            new Cañas_Liberia(idCarrera, nombreChofer, 1, 1.1, conn).setVisible(true);
-        } else if (liberiaCanias) {
-            new liberia_Cañas(idCarrera, nombreChofer, 2, 1.2, conn).setVisible(true);
-        }
-        frame.dispose(); // Cerrar la ventana actual si ya no se usa
-    } else {
-        JOptionPane.showMessageDialog(frame, "El usuario o número de unidad son incorrectos", "Error", JOptionPane.ERROR_MESSAGE);
-    }
+
 
     ps.close();
     // conn se pasa a la siguiente ventana, no se cierra aquí
