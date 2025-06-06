@@ -5,6 +5,9 @@ import java.awt.Container;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
 
 import javax.swing.JButton;
 import javax.swing.JComboBox;
@@ -17,18 +20,26 @@ public class Cañas_Liberia extends Carreras {
     
     public double totalGanancias_CañasLiberia;
 
-    public Cañas_Liberia(int  u, String n, int s, double p) {
-        super(u, n, s, p);
-        switch (s) {
-            case 2:
-                inicioCarrera();
-                break;
-        
-            default:
-                break;
-        }
-        
+private Connection conn;
+private int idCarrera;
+private String nombreChofer;
+private double precio;
+
+public Cañas_Liberia(int idCarrera, String nombreChofer, int sentido, double precio, Connection conn) {
+    super(idCarrera, nombreChofer, sentido, precio); // Llamada al constructor de Carreras
+
+    this.idCarrera = idCarrera;
+    this.nombreChofer = nombreChofer;
+    this.precio = precio;
+    this.conn = conn;
+
+    if (sentido == 2) {
+        inicioCarrera();
     }
+
+    // Acá va el resto de tu interfaz o lógica
+}
+
   
 
     @Override
@@ -110,46 +121,59 @@ public class Cañas_Liberia extends Carreras {
    
     pagar.addActionListener(new ActionListener() {
         @Override
-        public void actionPerformed(ActionEvent e) {
-         boolean validacion = true; 
-         double valoTickets; 
-         int indice = 0; 
-         String opcionSelec = (String) comboDestino.getSelectedItem(); 
-         try{
-         pasajeros = Integer.parseInt(fieldCantidad.getText().trim());
-         if (pasajeros <=0){
-             throw new NumberFormatException (); 
-         }
-         }catch (NumberFormatException ex){
-             JOptionPane.showMessageDialog(frame , "Ingrese cantidad de pasajeros valido", "Error", JOptionPane.ERROR_MESSAGE);
-             validacion = false; 
-         }
-         
-         if(comboDestino == null){
-             JOptionPane.showMessageDialog(frame, "Ingrese un destino valido", "Error", JOptionPane.ERROR_MESSAGE);
-             validacion = false; 
-         }
-         
-         for(String parada : paradas){
+        public void actionPerformed(ActionEvent e) {pagar.addActionListener(new ActionListener() {
+    @Override
+    public void actionPerformed(ActionEvent e) {
+        boolean validacion = true; 
+        double totalTickets = 0; 
+        int indice = 0; 
+        String opcionSelec = (String) comboDestino.getSelectedItem(); 
 
-            for (int i =0; i<paradas.length; i++){
-
-                if (opcionSelec.equals(paradas[i])){
-                    indice = i; 
-                }
+        try {
+            pasajeros = Integer.parseInt(fieldCantidad.getText().trim());
+            if (pasajeros <= 0) {
+                throw new NumberFormatException();
             }
-         }
-         
-         
-         if (validacion == true){
-            totalPasajeros += pasajeros;
-             totalTiket = tarifas[indice]*pasajeros; 
-             mostrarFactura(paradas[indice], tarifas[indice],totalTiket);
-             CalcularPorSentido(sentido, totalTiket);
-         }
-         
-         
-         
+        } catch (NumberFormatException ex) {
+            JOptionPane.showMessageDialog(frame, "Ingrese una cantidad válida de pasajeros", "Error", JOptionPane.ERROR_MESSAGE);
+            validacion = false;
+        }
+
+        if (comboDestino == null || opcionSelec == null) {
+            JOptionPane.showMessageDialog(frame, "Seleccione un destino válido", "Error", JOptionPane.ERROR_MESSAGE);
+            validacion = false;
+        }
+
+        for (int i = 0; i < paradas.length; i++) {
+            if (opcionSelec.equals(paradas[i])) {
+                indice = i;
+            }
+        }
+
+        if (validacion) {
+            totalTickets = pasajeros * precio;
+
+            try {
+                String sql = "UPDATE carreras SET Cañas_Liberia_Total = ?, Pasajeros = ? WHERE idCarreras = ? AND nombreChofer = ?";
+                PreparedStatement ps = conn.prepareStatement(sql);
+                ps.setDouble(1, totalTickets);
+                ps.setInt(2, pasajeros);
+                ps.setInt(3, idCarrera);
+                ps.setString(4, nombreChofer);
+                ps.executeUpdate();
+                ps.close();
+
+                mostrarFactura(paradas[indice], precio, totalTickets);
+                JOptionPane.showMessageDialog(frame, "Datos guardados correctamente en la base de datos.");
+
+            } catch (SQLException ex) {
+                ex.printStackTrace();
+                JOptionPane.showMessageDialog(frame, "Error al guardar los datos en la base de datos.", "Error", JOptionPane.ERROR_MESSAGE);
+            }
+        }
+    }
+});
+
         }
     });
 

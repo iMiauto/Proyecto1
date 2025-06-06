@@ -4,6 +4,7 @@ import java.awt.Container;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.sql.Connection;
 
 import javax.swing.JButton;
 import javax.swing.JComboBox;
@@ -15,18 +16,26 @@ public class liberia_Cañas extends Carreras{
     //Atributos
     public double  totalGanancias_LiberiaCañas;
 
-    public liberia_Cañas(int u, String n, int s, double p) {
-        super(u, n, s, p); 
-        switch (s) {
-            case 2:
-                inicioCarrera();
-                break;
-        
-            default:
-                break;
-        }
-       
+   private Connection conn;
+private int idCarrera;
+private String nombreChofer;
+private double precio;
+
+public liberia_Cañas(int idCarrera, String nombreChofer, int sentido, double precio, Connection conn) {
+    super(idCarrera, nombreChofer, sentido, precio); // Llama a Carreras
+
+    this.idCarrera = idCarrera;
+    this.nombreChofer = nombreChofer;
+    this.precio = precio;
+    this.conn = conn;
+
+    if (sentido == 2) {
+        inicioCarrera();
     }
+
+    // Continúa con la interfaz como antes
+}
+
     @Override
     public void CalcularPorSentido(String sentido, double totalTiket){
         totalGanancias_LiberiaCañas += totalTiket;
