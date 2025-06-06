@@ -17,7 +17,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 public class Principal extends JFrame implements Serializable{
-public ArrayList<Carreras> arrayCarrera = new ArrayList(); 
+
 
 
     private void menuPrincipal() {
@@ -327,24 +327,10 @@ try {
     return;
 }
 
-          
-            if (arrayCarrera.isEmpty()) {
-                JOptionPane.showMessageDialog(frame, "No hay choferes registrados.", "Error", JOptionPane.ERROR_MESSAGE);
-                return;
-            }
 
-           
-            boolean validacion = false;
-            for (Carreras buscar : arrayCarrera) {
-               
-            }
-
-            if ( validacion == false) {
-                JOptionPane.showMessageDialog(frame, "El usuario o número de unidad son incorrectos", "Error", JOptionPane.ERROR_MESSAGE);
-            }
 try {
     Connection conn = DriverManager.getConnection(
-        "jdbc:mysql://localhost:3306/tu_basedatos", "root", "tu_contraseña");
+        "jdbc:mysql://localhost:3306/proyecto1", "root", "Tree23815");
 
     String sql = "SELECT * FROM carreras WHERE nombreChofer = ? AND idCarreras = ?";
     PreparedStatement ps = conn.prepareStatement(sql);
@@ -361,7 +347,7 @@ try {
     ex.printStackTrace();
     JOptionPane.showMessageDialog(frame, "Error de conexión a la base de datos.", "Error", JOptionPane.ERROR_MESSAGE);
 }
-
+       
         }
     });
 
