@@ -335,7 +335,7 @@ aceptar.addActionListener(new ActionListener() {
 
         try {
             Connection conn = DriverManager.getConnection(
-                "jdbc:mysql://localhost:3306/tu_basedatos", "root", "tu_contraseña");
+                "jdbc:mysql://localhost:3306/proyecto1", "root", "Tree23815");
 
             String sql = "SELECT * FROM carreras WHERE nombreChofer = ? AND idCarreras = ?";
             PreparedStatement ps = conn.prepareStatement(sql);
