@@ -1,12 +1,11 @@
-import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
-import java.sql.DriverManager;
 import java.sql.Connection;
-import java.sql.SQLException;
+import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.util.regex.Pattern;
+import java.sql.SQLException;
+import javax.swing.*;
 
 
 public class Registro {
@@ -122,7 +121,7 @@ public class Registro {
                     }
                 } catch (HeadlessException | SQLException e1) {
                     // TODO Auto-generated catch block
-                    e1.printStackTrace();
+                    e1.printStackTrace();   
                 }
               
             }   

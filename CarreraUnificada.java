@@ -84,27 +84,31 @@ public class CarreraUnificada extends JFrame implements Serializable {
         terminar.setForeground(Color.WHITE);
         contenedor.add(terminar);
 
-        pagar.addActionListener(e -> {
-            boolean validacion = true;
-            int indice = comboDestino.getSelectedIndex();
+   pagar.addActionListener(e -> {
+    boolean validacion = true;
+    int indice = comboDestino.getSelectedIndex();
 
-            try {
-                pasajeros = Integer.parseInt(fieldCantidad.getText().trim());
-                if (pasajeros <= 0) throw new NumberFormatException();
-            } catch (NumberFormatException ex) {
-                JOptionPane.showMessageDialog(frame, "Ingrese una cantidad válida de pasajeros", "Error", JOptionPane.ERROR_MESSAGE);
-                validacion = false;
-            }
+    try {
+        pasajeros = Integer.parseInt(fieldCantidad.getText().trim());
+        if (pasajeros <= 0) throw new NumberFormatException();
+    } catch (NumberFormatException ex) {
+        JOptionPane.showMessageDialog(frame, "Ingrese una cantidad válida de pasajeros", "Error", JOptionPane.ERROR_MESSAGE);
+        validacion = false;
+    }
 
-            if (validacion) {
-                totalTiket = tarifas[indice] * pasajeros;
-                totalPasajeros += pasajeros;
-                mostrarFactura(paradas[indice], tarifas[indice], totalTiket, sentidoTexto);
-                calcularPorSentido(sentidoTexto, totalTiket);
-            }
-        });
+    if (validacion) {
+        double tarifa = tarifas[indice];
+        totalTiket = tarifa * pasajeros;
+        totalPasajeros += pasajeros;
 
-        terminar.addActionListener(e -> {
+        mostrarFactura(paradas[indice], tarifa, totalTiket, (sentido == 2 ? "Cañas-Liberia" : "Liberia-Cañas"));
+
+        calcularPorSentido(tarifa, pasajeros); // ← Esta es la llamada correcta ahora
+    }
+});
+
+
+        terminar.addActionListener(e -> {   
             calcularGanancias(totalTiket);
             frame.dispose();
         });
@@ -124,13 +128,16 @@ public class CarreraUnificada extends JFrame implements Serializable {
         JOptionPane.showMessageDialog(null, factura.toString(), "Factura", JOptionPane.INFORMATION_MESSAGE);
     }
 
-private void calcularPorSentido(String sentidoTexto, double totalTiket) {
-    String columna = sentidoTexto.equals("Cañas-Liberia") ? "Cañas_Liberia_Total" : "Liberia_Cañas_Total";
+private void calcularPorSentido(double valorTarifa, int pasajeros) {
+    // Determinar la columna según el sentido (1 = Liberia-Cañas, 2 = Cañas-Liberia)
+    String columna = (sentido == 2) ? "Cañas_Liberia_Total" : "Liberia_Cañas_Total";
+
+    double total = valorTarifa * pasajeros;
 
     try (Connection conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/proyecto1", "root", "root")) {
-        String sql = "UPDATE carreras SET " + columna + " = " + columna + " + ?, Pasajeros = ? WHERE idCarreras = ? AND nombreChofer = ?";
+        String sql = "UPDATE carreras SET " + columna + " = " + columna + " + ?, Pasajeros = Pasajeros + ? WHERE idCarreras = ? AND nombreChofer = ?";
         PreparedStatement ps = conn.prepareStatement(sql);
-        ps.setDouble(1, totalTiket);
+        ps.setDouble(1, total);
         ps.setInt(2, pasajeros);
         ps.setInt(3, unidad);
         ps.setString(4, nombreChofer);
@@ -140,6 +147,8 @@ private void calcularPorSentido(String sentidoTexto, double totalTiket) {
         JOptionPane.showMessageDialog(null, "Error al actualizar el total por sentido: " + e.getMessage());
     }
 }
+
+
 
 
     public static void calcularGanancias(double totalTiket) {
