@@ -15,20 +15,10 @@ public abstract class Carreras implements Serializable {
     protected double totalCarrera;
     protected double totalTiket; 
     protected String sentido, nombreUnidad;
-    protected static Chofer A; 
+
 
     public Carreras(int u, String n, int s, double p) {
-        switch (s) {
-            case 1:
-                A.setNombre(n);
-                A.setNumeroUnidad(u);
-                A.setSentido(s);
-                break;
-           
-            case 3: 
-                A = new Chofer();
-                break;
-           }
+    
     }
     public static  void calcularGanancias(double totalTiket) {
         totalGanancias += totalTiket;
@@ -49,11 +39,7 @@ public abstract class Carreras implements Serializable {
     protected void setTotalPasajeros(int totalPasajeros) {
         this.totalPasajeros = totalPasajeros;
     }
-    public String  muestraGeneral (){
-        String  texto = " "; 
-        texto = A.muestra() + toString(); 
-        return texto;
-    }
+
     protected int getTotalPasajeros() {
         return totalPasajeros;
     }

@@ -103,6 +103,32 @@ public ArrayList<Carreras> arrayCarrera = new ArrayList();
             }
         });
 
+        btn.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                switch (texto) {
+                    case "Carreras":
+                        carrera();
+                        break;
+                    case "Agregar unidades":
+                    choferes chofer = new choferes();
+                        break;
+                    case "Ingresos ":
+                        ingresosPorUnidad();
+                        break;
+                    case "Autoría":
+                       new Autores().mostrarAutores();
+                        break;
+                    case "Administración de DB":
+                       // Falta implementar la clase de administración de DB
+                        break;
+                    case "Usuarios":
+                        Registro registroUsuarios = new Registro();
+                        break;
+                }
+            }
+        });
+
         return btn;
     }
 
@@ -114,97 +140,81 @@ public ArrayList<Carreras> arrayCarrera = new ArrayList();
     /**
      * 
      */
-    public void ingresosPorUnidad() {
-        JFrame frame = new JFrame("Ingresos por Unidad");
-        frame.setResizable(false);
-        frame.setSize(500, 400);
-        frame.setLocationRelativeTo(null);
-        frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-        
-        Container contenedor = frame.getContentPane();
-        contenedor.setLayout(null);
-        contenedor.setBackground(new Color(246, 239, 239));
-    
-    
-        JLabel lblTitulo = new JLabel("Consultar Ingresos por Unidad");
-        lblTitulo.setFont(new Font("Times New Roman", Font.BOLD, 18));
-        lblTitulo.setBounds(120, 20, 300, 30);
-        contenedor.add(lblTitulo);
-    
-        JLabel lblUnidad = new JLabel("Número de Unidad:");
-        lblUnidad.setBounds(50, 80, 150, 20);
-        contenedor.add(lblUnidad);
-    
-        JTextField txtUnidad = new JTextField();
-        txtUnidad.setBounds(200, 80, 150, 25);
-        contenedor.add(txtUnidad);
-    
-        JTextArea areaResultados = new JTextArea();
-        areaResultados.setEditable(false);
-        JScrollPane scroll = new JScrollPane(areaResultados);
-        scroll.setBounds(50, 150, 400, 150);
-        contenedor.add(scroll);
-    
-        JButton btnConsultar = new JButton("Consultar");
-        btnConsultar.setBounds(180, 320, 120, 30);
-        btnConsultar.setBackground(new Color(20, 113, 159));
-        btnConsultar.setForeground(Color.WHITE);
-        contenedor.add(btnConsultar);
-    
-      
-        btnConsultar.addActionListener(e -> {
-            try {
-                int numeroUnidad = Integer.parseInt(txtUnidad.getText().trim());
-                boolean unidadEncontrada = false;
-                double totalIngresos = 0.0;
-                int totalPasajeros = 0;
-                StringBuilder detalles = new StringBuilder();
-    
-                
-                for (Carreras carrera : arrayCarrera) {
-                    if (carrera != null && carrera.A != null && carrera.A.getNumeroUnidad() == numeroUnidad && carrera.sentido != null) {
-                        unidadEncontrada = true;
-                
-                        if (carrera instanceof Cañas_Liberia) {
-                            totalIngresos += ((Cañas_Liberia) carrera).totalGanancias_CañasLiberia;
-                        } else if (carrera instanceof liberia_Cañas) {
-                            totalIngresos += ((liberia_Cañas) carrera).totalGanancias_LiberiaCañas;
-                        }
-                
-                        totalPasajeros += carrera.getTotalPasajeros();
-                
-                        detalles.append("Sentido: ").append(carrera.sentido)
-                               .append(" | Pasajeros: ").append(carrera.getTotalPasajeros())
-                               .append(" | Ingresos: ").append(carrera.totalTiket)
-                               .append("\n");
-                    }
-                }
-                
-    
-                if (unidadEncontrada) {
-                    areaResultados.setText(
-                        "=== Resumen de Unidad " + numeroUnidad + " ===\n" +
-                        "Chofer: " + arrayCarrera.stream()
-                            .filter(c -> c.A != null && c.A.getNumeroUnidad() == numeroUnidad)
-                            .findFirst()
-                            .map(c -> c.A.getNombre())
-                            .orElse("No asignado") + "\n" +
-                        "Total Pasajeros: " + totalPasajeros + "\n" +
-                        "Total Ingresos: ₡" + totalIngresos + "\n\n" +
-                        "=== Detalles por Carrera ===\n" +
-                        detalles.toString()
-                    );
-                } else {
-                    JOptionPane.showMessageDialog(frame, "Unidad no encontrada", "Error", JOptionPane.ERROR_MESSAGE);
-                }
-            } catch (NumberFormatException ex) {
-                JOptionPane.showMessageDialog(frame, "Ingrese un número de unidad válido", "Error", JOptionPane.ERROR_MESSAGE);
+    private void ingresosPorUnidad() {
+    JFrame frame = new JFrame("Ingresos por Unidad");
+    frame.setResizable(false);
+    frame.setSize(500, 400);
+    frame.setLocationRelativeTo(null);
+    frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+
+    Container contenedor = frame.getContentPane();
+    contenedor.setLayout(null);
+    contenedor.setBackground(new Color(246, 239, 239));
+
+    JLabel lblTitulo = new JLabel("Consultar Ingresos por Unidad");
+    lblTitulo.setFont(new Font("Times New Roman", Font.BOLD, 18));
+    lblTitulo.setBounds(120, 20, 300, 30);
+    contenedor.add(lblTitulo);
+
+    JLabel lblUnidad = new JLabel("Número de Unidad:");
+    lblUnidad.setBounds(50, 80, 150, 20);
+    contenedor.add(lblUnidad);
+
+    JTextField txtUnidad = new JTextField();
+    txtUnidad.setBounds(200, 80, 150, 25);
+    contenedor.add(txtUnidad);
+
+    JTextArea areaResultados = new JTextArea();
+    areaResultados.setEditable(false);
+    JScrollPane scroll = new JScrollPane(areaResultados);
+    scroll.setBounds(50, 150, 400, 150);
+    contenedor.add(scroll);
+
+    JButton btnConsultar = new JButton("Consultar");
+    btnConsultar.setBounds(180, 320, 120, 30);
+    btnConsultar.setBackground(new Color(20, 113, 159));
+    btnConsultar.setForeground(Color.WHITE);
+    contenedor.add(btnConsultar);
+
+    btnConsultar.addActionListener(e -> {
+        String unidad = txtUnidad.getText().trim();
+        if (unidad.isEmpty()) {
+            JOptionPane.showMessageDialog(frame, "Ingrese un número de unidad.", "Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
+        try (Connection conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/proyecto1", "root", "Tree23815")) {
+            String sql = "SELECT Pasajeros, Cañas_Liberia_Total, Liberia_Cañas_Total FROM carreras WHERE idCarreras = ?";
+            PreparedStatement stmt = conn.prepareStatement(sql);
+            stmt.setString(1, unidad);
+            ResultSet rs = stmt.executeQuery();
+
+            if (rs.next()) {
+                int pasajeros = rs.getInt("Pasajeros");
+                int totalCL = rs.getInt("Cañas_Liberia_Total");
+                int totalLC = rs.getInt("Liberia_Cañas_Total");
+
+                areaResultados.setText(
+                    "Unidad: " + unidad + "\n" +
+                    "Pasajeros: " + pasajeros + "\n" +
+                    "Total Cañas → Liberia: " + totalCL + "\n" +
+                    "Total Liberia → Cañas: " + totalLC
+                );
+            } else {
+                areaResultados.setText("No se encontraron datos para la unidad " + unidad + ".");
             }
-        });
-    
-        frame.setVisible(true);
-    }
-   
+
+            rs.close();
+            stmt.close();
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+            JOptionPane.showMessageDialog(frame, "Error al consultar la base de datos:\n" + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+        }
+    });
+
+    frame.setVisible(true);
+}
+
      
 public void carrera() { 
     JFrame frame = new JFrame("Validación");
@@ -317,10 +327,7 @@ public void carrera() {
            
             boolean validacion = false;
             for (Carreras buscar : arrayCarrera) {
-                if (buscar.A.getNumeroUnidad() == numeroComparacio && nombreChofer.equals(buscar.A.getNombre())) {
-                    validacion = true;
-                    break;
-                }
+               
             }
 
             if ( validacion == false) {

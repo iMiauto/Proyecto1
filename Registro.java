@@ -266,8 +266,6 @@ private boolean existencia_Usuario (String[] datos) throws SQLException {
         return campo;
     }
 
-    public static void main(String[] args) {
-        new Registro();
-    }
+
 }
 

@@ -94,7 +94,6 @@ public class choferes {
                 };
 
                 if(esvalido(datos)){
-                    JOptionPane.showMessageDialog(frame, "Datos ingresados correctamente.", "Éxito", JOptionPane.INFORMATION_MESSAGE);
                     frame.dispose();
                 }
                 
@@ -135,7 +134,7 @@ private boolean esvalido(String datos[]) {
     }
 
     if (!existencia_Unidad(datos)) {
-        BDingreso(datos);  // solo si no existe
+        BDingreso(datos);  
         return true;
     } else {
         JOptionPane.showMessageDialog(null, "La unidad ya está registrada.", "Error", JOptionPane.ERROR_MESSAGE);
@@ -153,8 +152,8 @@ private void BDingreso(String[] datos) {
     try (Connection conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/proyecto1", "root", "Tree23815")) {
         String sql = "INSERT INTO carreras (nombreChofer, idCarreras) VALUES (?, ?)";
         PreparedStatement stmt = conn.prepareStatement(sql);
-        stmt.setString(1, datos[0]); // Nombre del chofer
-        stmt.setString(2, datos[1]); // Número de unidad
+        stmt.setString(1, datos[0]); 
+        stmt.setString(2, datos[1]); 
         stmt.executeUpdate();
         stmt.close();
     } catch (SQLException e) {
@@ -182,6 +181,8 @@ private boolean existencia_Unidad(String datos[]) {
             existe = true;
         }
 
+        JOptionPane.showMessageDialog(null, "El número de unidad es: " + datos[1], "Información", JOptionPane.INFORMATION_MESSAGE);
+
     } catch (SQLException e) {
         e.printStackTrace();
         JOptionPane.showMessageDialog(null, "Error al verificar el número de unidad: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
@@ -193,9 +194,7 @@ private boolean existencia_Unidad(String datos[]) {
 
     return existe;
 }
-public static void main(String[] args) {
-        new choferes();
-}
+
 
 
 }

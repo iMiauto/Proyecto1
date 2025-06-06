@@ -114,9 +114,6 @@ public class Autores {
    
 
 
-    public static void main(String[] args) {
-        Autores autores = new Autores();
-        autores.mostrarAutores();
-    }
+
 
 }
