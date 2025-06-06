@@ -5,6 +5,7 @@ import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.sql.Connection;
+import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import javax.swing.JButton;
@@ -16,7 +17,7 @@ import javax.swing.JTextField;
 
 public class liberia_Cañas extends Carreras{
     //Atributos
-    public double  totalGanancias_LiberiaCañas;
+    public double  totalGanancias_LiberiaCañas = 0;
 
 private Connection conn;
 private int idCarrera;
@@ -38,10 +39,22 @@ public liberia_Cañas(int idCarrera, String nombreChofer, int sentido, double pr
     // Continúa con la interfaz como antes
 }
 
-    @Override
-    public void CalcularPorSentido(String sentido, double totalTiket){
-        totalGanancias_LiberiaCañas += totalTiket;
-        
+public void CalcularPorSentido(String sentido, double totalTiket) {
+        if (sentido.equals("Liberia-Cañas")) {
+            totalGanancias_LiberiaCañas += totalTiket;
+
+            try (Connection conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/busesinurbanos", "root", "")) {
+                String sql = "UPDATE carreras SET Liberia_Cañas_Total = Liberia_Cañas_Total + ? WHERE idCarreras = ? AND nombreChofer = ?";
+                PreparedStatement ps = conn.prepareStatement(sql);
+                ps.setDouble(1, totalTiket);
+                ps.setInt(2, getUnidad());
+                ps.setString(3, nombreChofer);
+                ps.executeUpdate();
+                ps.close();
+            } catch (SQLException e) {
+                JOptionPane.showMessageDialog(null, "Error al actualizar el total por sentido: " + e.getMessage());
+            }
+        }
     }
 
     @Override
@@ -49,11 +62,13 @@ public liberia_Cañas(int idCarrera, String nombreChofer, int sentido, double pr
     System.out.println("Carrera en el sentido Liberia - Cañas.");
     }
 
-    @Override
 
-        public void inicioCarrera() {
-            totalTiket=0;
-            pasajeros =0;
+        @Override
+    public void inicioCarrera() {
+        JOptionPane.showMessageDialog(null, "Inicio de carrera Liberia - Cañas");
+        setPasajeros(0);
+        setTotalCarrera(0);
+        setTotalTiket(0);
             
             JFrame frame = new JFrame("Iniciar Carrera");
             frame.setResizable(false);

@@ -6,6 +6,9 @@ import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
 
 import javax.swing.JButton;
 import javax.swing.JComboBox;
@@ -44,17 +47,32 @@ public Cañas_Liberia(int idCarrera, String nombreChofer, int sentido, double pr
     public void sentidoCarera() {
         System.out.println("Carrera en el sentido Cañas - Liberia.");
     }
-    @Override
-    public void CalcularPorSentido(String sentido, double totalTiket){
-        totalGanancias_CañasLiberia += totalTiket;
+ public void CalcularPorSentido(String sentido, double totalTiket) {
+        if (sentido.equals("Cañas-Liberia")) {
+            totalGanancias_CañasLiberia += totalTiket;
+
+            try (Connection conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/busesinurbanos", "root", "")) {
+                String sql = "UPDATE carreras SET Cañas_Liberia_Total = Cañas_Liberia_Total + ? WHERE idCarreras = ? AND nombreChofer = ?";
+                PreparedStatement ps = conn.prepareStatement(sql);
+                ps.setDouble(1, totalTiket);
+                ps.setInt(2, getUnidad());
+                ps.setString(3, nombreChofer);
+                ps.executeUpdate();
+                ps.close();
+            } catch (SQLException e) {
+                JOptionPane.showMessageDialog(null, "Error al actualizar el total por sentido: " + e.getMessage());
+            }
+        }
     }
 
 
 
     @Override
     public void inicioCarrera() {
-    totalTiket=0;
-    pasajeros =0;
+        JOptionPane.showMessageDialog(null, "Inicio de carrera Cañas - Liberia");
+        setPasajeros(0);
+        setTotalCarrera(0);
+        setTotalTiket(0);
     
     JFrame frame = new JFrame("Iniciar Carrera");
     frame.setResizable(false);
@@ -193,10 +211,11 @@ public Cañas_Liberia(int idCarrera, String nombreChofer, int sentido, double pr
 
     @Override
     public String toString() {
-        return "Cañas-Liberia" + "\n" 
-                +  "totalTiket="  + "\n" 
-                + " totalGanancias_CañasLiberia=" + getTotalGanancias() 
-                + "pasajeros=" + getTotalPasajeros()  + "\n" ; 
-                
+        return "Unidad: " + getUnidad() +
+               "\nChofer: " + nombreChofer +
+               "\nPasajeros: " + getPasajeros() +
+               "\nTotal Carrera: " + getTotalCarrera() +
+               "\nTotal Tiket: " + getTotalTiket() +
+               "\nGanancias Cañas-Liberia: " + totalGanancias_CañasLiberia;
     }
 }
