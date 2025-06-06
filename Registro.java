@@ -181,7 +181,7 @@ private boolean existencia_Usuario (String[] datos) throws SQLException {
 
      // Verificar si el usuario ya existe en la base de datos
     try {       
-        conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/proyecto1", "root", "Tree23815");
+        conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/proyecto1", "root", "root");
         String sql = "SELECT * FROM autentificacion WHERE Cedula = ? OR login = ?";
         stmt = conn.prepareStatement(sql);
         stmt.setString(1, datos[0]);
@@ -212,7 +212,7 @@ private boolean existencia_Usuario (String[] datos) throws SQLException {
     boolean isValid = false;
 
         try{
-           conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/proyecto1", "root", "Tree23815");
+           conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/proyecto1", "root", "root");
          String sql = "INSERT INTO autentificacion (Cedula, Nombre1, Nombre2, Apellido1, Apellido2, Contraseña, login) VALUES (?, ?, ?, ?, ?, ?, ?)";     
          stmt = conn.prepareStatement(sql);  
             stmt.setString(1, datos[0]);

@@ -189,7 +189,7 @@ public class Principal extends JFrame implements Serializable{
             return;
         }
 
-        try (Connection conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/proyecto1", "root", "Tree23815")) {
+        try (Connection conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/proyecto1", "root", "root")) {
             String sql = "SELECT Pasajeros, Cañas_Liberia_Total, Liberia_Cañas_Total FROM carreras WHERE idCarreras = ?";
             PreparedStatement stmt = conn.prepareStatement(sql);
             stmt.setString(1, unidad);
@@ -221,71 +221,61 @@ public class Principal extends JFrame implements Serializable{
     frame.setVisible(true);
 }
 
-     
-public void carrera() { 
+
+public void carrera() {
     JFrame frame = new JFrame("Validación");
     frame.setResizable(false);
-    frame.setSize(400, 400);  
+    frame.setSize(400, 400);
     frame.setLocationRelativeTo(null);
     frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-    
+
     Container contenedor = frame.getContentPane();
     contenedor.setLayout(null);
     contenedor.setBackground(new Color(246, 239, 239));
 
-    // Etiqueta de título
     JLabel labelTitulo = new JLabel("Validación de Carrera");
     labelTitulo.setFont(new Font("Times New Roman", Font.BOLD, 18));
     labelTitulo.setBounds(100, 10, 200, 30);
     labelTitulo.setForeground(new Color(20, 113, 159));
     contenedor.add(labelTitulo);
 
-    // Etiqueta: Nombre del chofer
     JLabel labelNombre = new JLabel("Ingrese usuario:");
     labelNombre.setFont(new Font("Times New Roman", Font.BOLD, 14));
     labelNombre.setBounds(20, 50, 200, 20);
     contenedor.add(labelNombre);
 
-    // Campo de texto: Nombre del chofer
     JTextField Chofer = new JTextField();
     Chofer.setBounds(200, 50, 150, 25);
     contenedor.add(Chofer);
 
-    // Etiqueta: Número de unidad
     JLabel labelUnidad = new JLabel("Ingrese Código:");
     labelUnidad.setFont(new Font("Times New Roman", Font.BOLD, 14));
     labelUnidad.setBounds(20, 90, 200, 20);
     contenedor.add(labelUnidad);
 
-    // Campo de texto: Número de unidad
     JTextField numeroUnidad = new JTextField();
     numeroUnidad.setBounds(200, 90, 150, 25);
     contenedor.add(numeroUnidad);
 
-    // Etiqueta: Selección de carrera
     JLabel inicioCarrera = new JLabel("Seleccione el sentido de Carrera:");
     inicioCarrera.setFont(new Font("Times New Roman", Font.BOLD, 14));
     inicioCarrera.setBounds(20, 130, 250, 20);
     contenedor.add(inicioCarrera);
 
-    // Opciones de carrera con JCheckBox
     JCheckBox bCañas_Liberia = new JCheckBox("Cañas - Liberia");
     bCañas_Liberia.setBounds(50, 160, 150, 20);
     bCañas_Liberia.setBackground(new Color(246, 239, 239));
     contenedor.add(bCañas_Liberia);
-    
 
     JCheckBox bLiberia_Cañas = new JCheckBox("Liberia - Cañas");
     bLiberia_Cañas.setBounds(50, 190, 150, 20);
     bLiberia_Cañas.setBackground(new Color(246, 239, 239));
     contenedor.add(bLiberia_Cañas);
-    
-    ButtonGroup selecion = new ButtonGroup(); 
+
+    ButtonGroup selecion = new ButtonGroup();
     selecion.add(bCañas_Liberia);
     selecion.add(bLiberia_Cañas);
-    
 
-    
     JTextArea explicacion = new JTextArea(
         "Aclaraciones para el uso durante las carreras:\n"
         + "- Nombre del chofer: Usuario\n"
@@ -297,73 +287,62 @@ public void carrera() {
     explicacion.setBackground(new Color(230, 230, 230));
     contenedor.add(explicacion);
 
-
     JButton aceptar = new JButton("Aceptar");
     aceptar.setBounds(140, 300, 120, 30);
     aceptar.setBackground(new Color(20, 133, 159));
     aceptar.setForeground(Color.white);
     contenedor.add(aceptar);
 
-    ////CAMBIAMOS LOS BOTONES ACEPTAR 
-aceptar.addActionListener(new ActionListener() {
-    @Override
-    public void actionPerformed(ActionEvent e) {
-        String nombreChofer = Chofer.getText().trim();
-        String codigoTexto = numeroUnidad.getText().trim();
-        boolean caniasLiberia = bCañas_Liberia.isSelected();
-        boolean liberiaCanias = bLiberia_Cañas.isSelected();
+    // Acción del botón aceptar adaptada a CarreraUnificada
+    aceptar.addActionListener(new ActionListener() {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            String nombreChofer = Chofer.getText().trim();
+            String codigoTexto = numeroUnidad.getText().trim();
+            boolean caniasLiberia = bCañas_Liberia.isSelected();
+            boolean liberiaCanias = bLiberia_Cañas.isSelected();
 
-        if (nombreChofer.isEmpty() || codigoTexto.isEmpty() || (!caniasLiberia && !liberiaCanias)) {
-            JOptionPane.showMessageDialog(frame, "Complete todos los campos y seleccione un sentido.", "Error", JOptionPane.ERROR_MESSAGE);
-            return;
-        }
+            if (nombreChofer.isEmpty() || codigoTexto.isEmpty() || (!caniasLiberia && !liberiaCanias)) {
+                JOptionPane.showMessageDialog(frame, "Complete todos los campos y seleccione un sentido.", "Error", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
 
-        int idCarrera;
-        try {
-            idCarrera = Integer.parseInt(codigoTexto);
-        } catch (NumberFormatException ex) {
-            JOptionPane.showMessageDialog(frame, "El código de unidad debe ser numérico.", "Error", JOptionPane.ERROR_MESSAGE);
-            return;
-        }
+            int idCarrera;
+            try {
+                idCarrera = Integer.parseInt(codigoTexto);
+            } catch (NumberFormatException ex) {
+                JOptionPane.showMessageDialog(frame, "El código de unidad debe ser numérico.", "Error", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
 
-        int sentido = 0;
-        if (caniasLiberia) {
-            sentido = 1;
-        } else if (liberiaCanias) {
-            sentido = 2;
-        }
+            int sentido = caniasLiberia ? 2 : 1; // 2 = Cañas-Liberia, 1 = Liberia-Cañas
 
         try {
             Connection conn = DriverManager.getConnection(
                 "jdbc:mysql://localhost:3306/proyecto1", "root", "Tree23815");
 
-            String sql = "SELECT * FROM carreras WHERE nombreChofer = ? AND idCarreras = ?";
-            PreparedStatement ps = conn.prepareStatement(sql);
-            ps.setString(1, nombreChofer);
-            ps.setInt(2, idCarrera);
-            ResultSet rs = ps.executeQuery();
+                String sql = "SELECT * FROM carreras WHERE nombreChofer = ? AND idCarreras = ?";
+                PreparedStatement ps = conn.prepareStatement(sql);
+                ps.setString(1, nombreChofer);
+                ps.setInt(2, idCarrera);
+                ResultSet rs = ps.executeQuery();
 
-            if (rs.next()) {
-                if (sentido == 1) {
-                    new Cañas_Liberia(idCarrera, nombreChofer, sentido, 1.1, conn).setVisible(true);
-                } else if (sentido == 2) {
-                    new liberia_Cañas(idCarrera, nombreChofer, sentido, 1.2, conn).setVisible(true);
+                if (rs.next()) {
+                    new CarreraUnificada(idCarrera, nombreChofer, sentido, conn);
+                    frame.dispose();
+                } else {
+                    JOptionPane.showMessageDialog(frame, "El usuario o número de unidad son incorrectos", "Error", JOptionPane.ERROR_MESSAGE);
                 }
-                frame.dispose();
-            } else {
-                JOptionPane.showMessageDialog(frame, "El usuario o número de unidad son incorrectos", "Error", JOptionPane.ERROR_MESSAGE);
+
+                ps.close();
+                conn.close();
+
+            } catch (SQLException ex) {
+                ex.printStackTrace();
+                JOptionPane.showMessageDialog(frame, "Error de conexión a la base de datos.", "Error", JOptionPane.ERROR_MESSAGE);
             }
-
-            ps.close();
-
-        } catch (SQLException ex) {
-            ex.printStackTrace();
-            JOptionPane.showMessageDialog(frame, "Error de conexión a la base de datos.", "Error", JOptionPane.ERROR_MESSAGE);
         }
-    }
-});
-
-
+    });
 
     frame.setVisible(true);
 }
@@ -396,7 +375,7 @@ private void ingreso_Usuario() {
         ImageIcon icono = new ImageIcon(getClass().getResource("/Recurso/Icono_bus.jpg"));
         f.setIconImage(icono.getImage());
     } catch (Exception e) {
-     
+    
         JOptionPane.showMessageDialog(f, "No se pudo cargar el ícono de la aplicación.", "Error", JOptionPane.ERROR_MESSAGE);
     }
 
@@ -504,13 +483,13 @@ private boolean validarUsuario(String usuario, String contrasena) {
 
     try {
         // Conexión a la base de datos
-        conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/proyecto1", "root", "Tree23815");
+        conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/proyecto1", "root", "root");
 
         
         String sql = "SELECT * FROM autentificacion WHERE login = ? AND Contraseña = ?";
         stmt = conn.prepareStatement(sql);
-        stmt.setString(1, usuario);     
-        stmt.setString(2, contrasena); 
+        stmt.setString(1, usuario);
+        stmt.setString(2, contrasena);
 
         
         rs = stmt.executeQuery();
@@ -533,7 +512,7 @@ private boolean validarUsuario(String usuario, String contrasena) {
 
 
     public static   void main(String[] args) {
-       new Principal().ingreso_Usuario();
+    new Principal().ingreso_Usuario();
     
     }
 }

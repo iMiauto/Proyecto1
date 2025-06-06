@@ -149,7 +149,7 @@ private boolean esvalido(String datos[]) {
       
     }
 private void BDingreso(String[] datos) {
-    try (Connection conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/proyecto1", "root", "Tree23815")) {
+    try (Connection conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/proyecto1", "root", "root")) {
         String sql = "INSERT INTO carreras (nombreChofer, idCarreras) VALUES (?, ?)";
         PreparedStatement stmt = conn.prepareStatement(sql);
         stmt.setString(1, datos[0]); 
@@ -170,7 +170,7 @@ private boolean existencia_Unidad(String datos[]) {
     boolean existe = false;
 
     try {
-        conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/proyecto1", "root", "Tree23815");
+        conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/proyecto1", "root", "root");
         String sql = "SELECT * FROM carreras WHERE idCarreras = ?";
         stmt = conn.prepareStatement(sql);
         stmt.setString(1, datos[0]);  
