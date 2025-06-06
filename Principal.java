@@ -17,7 +17,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 public class Principal extends JFrame implements Serializable{
-public ArrayList<Carreras> arrayCarrera = new ArrayList(); 
+
 
 
     private void menuPrincipal() {
