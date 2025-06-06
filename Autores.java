@@ -92,6 +92,7 @@ public class Autores {
         return panel;
     }
 
+
     private ImageIcon escalarImagenOvalada(String ruta, int ancho, int alto) {
         try {
             BufferedImage imagenOriginal = ImageIO.read(new File(ruta));
