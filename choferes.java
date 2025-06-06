@@ -1,4 +1,3 @@
-
 import java.awt.Color;
 import java.awt.Container;
 import java.awt.Font;
@@ -16,19 +15,19 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.*; 
-public class Chofer extends JFrame implements Serializable{
+public class choferes {
    public String nombre; 
    public int numeroUnidad; 
    public double sentido; 
 
-    public Chofer() {
+    public choferes() {
        JFrame frame = new JFrame("Agregar Unidades");
         frame.setResizable(false);
         frame.setSize(400, 300);
         frame.setLocationRelativeTo(null);
         frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         frame.setBackground(new Color(20, 113, 159));
-        frame.setVisible(true);
+       
         
         Container contenedor = frame.getContentPane();
         contenedor.setLayout(null);
@@ -113,6 +112,8 @@ public class Chofer extends JFrame implements Serializable{
                 aceptar.setBackground(new Color(20, 113, 159)); 
             }
         });
+
+         frame.setVisible(true);
        
     }
    
@@ -150,7 +151,7 @@ private boolean esvalido(String datos[]) {
     }
 private void BDingreso(String[] datos) {
     try (Connection conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/proyecto1", "root", "Tree23815")) {
-        String sql = "INSERT INTO carreras (nombre, idCarreras) VALUES (?, ?)";
+        String sql = "INSERT INTO carreras (nombreChofer, idCarreras) VALUES (?, ?)";
         PreparedStatement stmt = conn.prepareStatement(sql);
         stmt.setString(1, datos[0]); // Nombre del chofer
         stmt.setString(2, datos[1]); // Número de unidad
@@ -173,7 +174,7 @@ private boolean existencia_Unidad(String datos[]) {
         conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/proyecto1", "root", "Tree23815");
         String sql = "SELECT * FROM carreras WHERE idCarreras = ?";
         stmt = conn.prepareStatement(sql);
-        stmt.setString(1, datos[1]);  // Se busca por el número de unidad, no por el nombre
+        stmt.setString(1, datos[0]);  
 
         rs = stmt.executeQuery();
 
@@ -192,17 +193,13 @@ private boolean existencia_Unidad(String datos[]) {
 
     return existe;
 }
+public static void main(String[] args) {
+        new choferes();
+}
+
+
+}
 
 
     
 
-
-
-     public static void main (String[] args) {
-        Chofer chofer = new Chofer();
-       
-
-
-      
-}
-}
