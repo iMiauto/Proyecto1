@@ -19,7 +19,7 @@ import javax.swing.JTextField;
 
 public class Cañas_Liberia extends Carreras {
     
-    public double totalGanancias_CañasLiberia;
+    public double totalGanancias_CañasLiberia = 0;
 
 private Connection conn;
 private int idCarrera;
@@ -64,7 +64,6 @@ public Cañas_Liberia(int idCarrera, String nombreChofer, int sentido, double pr
             }
         }
     }
-
 
 
     @Override
