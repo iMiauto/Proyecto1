@@ -304,52 +304,66 @@ public void carrera() {
     aceptar.setForeground(Color.white);
     contenedor.add(aceptar);
 
-    
-    aceptar.addActionListener(new ActionListener() {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            
-          String nombreChofer = Chofer.getText().trim();
-String codigoTexto = numeroUnidad.getText().trim();
-boolean caniasLiberia = bCañas_Liberia.isSelected();
-boolean liberiaCanias = bLiberia_Cañas.isSelected();
+    ////CAMBIAMOS LOS BOTONES ACEPTAR 
+aceptar.addActionListener(new ActionListener() {
+    @Override
+    public void actionPerformed(ActionEvent e) {
+        String nombreChofer = Chofer.getText().trim();
+        String codigoTexto = numeroUnidad.getText().trim();
+        boolean caniasLiberia = bCañas_Liberia.isSelected();
+        boolean liberiaCanias = bLiberia_Cañas.isSelected();
 
-if (nombreChofer.isEmpty() || codigoTexto.isEmpty() || (!caniasLiberia && !liberiaCanias)) {
-    JOptionPane.showMessageDialog(frame, "Complete todos los campos y seleccione un sentido.", "Error", JOptionPane.ERROR_MESSAGE);
-    return;
-}
-
-int idCarrera;
-try {
-    idCarrera = Integer.parseInt(codigoTexto);
-} catch (NumberFormatException ex) {
-    JOptionPane.showMessageDialog(frame, "El código de unidad debe ser numérico.", "Error", JOptionPane.ERROR_MESSAGE);
-    return;
-}
-
-
-try {
-    Connection conn = DriverManager.getConnection(
-        "jdbc:mysql://localhost:3306/proyecto1", "root", "Tree23815");
-
-    String sql = "SELECT * FROM carreras WHERE nombreChofer = ? AND idCarreras = ?";
-    PreparedStatement ps = conn.prepareStatement(sql);
-    ps.setString(1, nombreChofer);
-    ps.setInt(2, idCarrera);
-    ResultSet rs = ps.executeQuery();
-
-
-
-    ps.close();
-    // conn se pasa a la siguiente ventana, no se cierra aquí
-
-} catch (SQLException ex) {
-    ex.printStackTrace();
-    JOptionPane.showMessageDialog(frame, "Error de conexión a la base de datos.", "Error", JOptionPane.ERROR_MESSAGE);
-}
-       
+        if (nombreChofer.isEmpty() || codigoTexto.isEmpty() || (!caniasLiberia && !liberiaCanias)) {
+            JOptionPane.showMessageDialog(frame, "Complete todos los campos y seleccione un sentido.", "Error", JOptionPane.ERROR_MESSAGE);
+            return;
         }
-    });
+
+        int idCarrera;
+        try {
+            idCarrera = Integer.parseInt(codigoTexto);
+        } catch (NumberFormatException ex) {
+            JOptionPane.showMessageDialog(frame, "El código de unidad debe ser numérico.", "Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
+        int sentido = 0;
+        if (caniasLiberia) {
+            sentido = 1;
+        } else if (liberiaCanias) {
+            sentido = 2;
+        }
+
+        try {
+            Connection conn = DriverManager.getConnection(
+                "jdbc:mysql://localhost:3306/tu_basedatos", "root", "tu_contraseña");
+
+            String sql = "SELECT * FROM carreras WHERE nombreChofer = ? AND idCarreras = ?";
+            PreparedStatement ps = conn.prepareStatement(sql);
+            ps.setString(1, nombreChofer);
+            ps.setInt(2, idCarrera);
+            ResultSet rs = ps.executeQuery();
+
+            if (rs.next()) {
+                if (sentido == 1) {
+                    new Cañas_Liberia(idCarrera, nombreChofer, sentido, 1.1, conn).setVisible(true);
+                } else if (sentido == 2) {
+                    new liberia_Cañas(idCarrera, nombreChofer, sentido, 1.2, conn).setVisible(true);
+                }
+                frame.dispose();
+            } else {
+                JOptionPane.showMessageDialog(frame, "El usuario o número de unidad son incorrectos", "Error", JOptionPane.ERROR_MESSAGE);
+            }
+
+            ps.close();
+
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+            JOptionPane.showMessageDialog(frame, "Error de conexión a la base de datos.", "Error", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+});
+
+
 
     frame.setVisible(true);
 }
