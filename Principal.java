@@ -189,7 +189,7 @@ public class Principal extends JFrame implements Serializable{
             return;
         }
 
-        try (Connection conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/proyecto1", "root", "Tree23815")) {
+        try (Connection conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/proyecto1", "root", "root")) {
             String sql = "SELECT Pasajeros, Cañas_Liberia_Total, Liberia_Cañas_Total FROM carreras WHERE idCarreras = ?";
             PreparedStatement stmt = conn.prepareStatement(sql);
             stmt.setString(1, unidad);
@@ -304,7 +304,7 @@ public void carrera() {
     aceptar.setForeground(Color.white);
     contenedor.add(aceptar);
 
-    ////CAMBIAMOS LOS BOTONES ACEPTAR 
+    ////CAMBIAMOS LOS BOTONES ACEPTAR
 aceptar.addActionListener(new ActionListener() {
     @Override
     public void actionPerformed(ActionEvent e) {
@@ -335,7 +335,7 @@ aceptar.addActionListener(new ActionListener() {
 
         try {
             Connection conn = DriverManager.getConnection(
-                "jdbc:mysql://localhost:3306/tu_basedatos", "root", "tu_contraseña");
+                "jdbc:mysql://localhost:3306/proyecto1", "root", "root");
 
             String sql = "SELECT * FROM carreras WHERE nombreChofer = ? AND idCarreras = ?";
             PreparedStatement ps = conn.prepareStatement(sql);
@@ -504,13 +504,13 @@ private boolean validarUsuario(String usuario, String contrasena) {
 
     try {
         // Conexión a la base de datos
-        conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/proyecto1", "root", "Tree23815");
+        conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/proyecto1", "root", "root");
 
         
         String sql = "SELECT * FROM autentificacion WHERE login = ? AND Contraseña = ?";
         stmt = conn.prepareStatement(sql);
-        stmt.setString(1, usuario);     
-        stmt.setString(2, contrasena); 
+        stmt.setString(1, usuario);
+        stmt.setString(2, contrasena);
 
         
         rs = stmt.executeQuery();

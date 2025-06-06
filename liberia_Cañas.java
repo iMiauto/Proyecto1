@@ -16,6 +16,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JTextField;
 
 public class liberia_Cañas extends Carreras{
+
     //Atributos
     public double  totalGanancias_LiberiaCañas = 0;
 
@@ -43,7 +44,7 @@ public void CalcularPorSentido(String sentido, double totalTiket) {
         if (sentido.equals("Liberia-Cañas")) {
             totalGanancias_LiberiaCañas += totalTiket;
 
-            try (Connection conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/busesinurbanos", "root", "")) {
+            try (Connection conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/busesinurbanos", "root", "root")) {
                 String sql = "UPDATE carreras SET Liberia_Cañas_Total = Liberia_Cañas_Total + ? WHERE idCarreras = ? AND nombreChofer = ?";
                 PreparedStatement ps = conn.prepareStatement(sql);
                 ps.setDouble(1, totalTiket);

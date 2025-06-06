@@ -1,19 +1,14 @@
+import java.awt.*;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import javax.swing.table.DefaultTableModel;
-
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-
-// import com.mysql.jdbc.Connection;
-// import com.mysql.jdbc.PreparedStatement;
-
-import java.awt.event.MouseEvent;
-import java.sql.DriverManager;
-import java.sql.SQLException;
-import java.awt.*;
-import java.awt.event.MouseAdapter;
 
 public class DB {
 
@@ -22,7 +17,7 @@ public class DB {
     }
 
     public void mostrarGUI() {
-         JFrame frame = new JFrame("Administración de Base de Datos");
+        JFrame frame = new JFrame("Administración de Base de Datos");
         frame.setSize(900, 600);
         frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         frame.setLocationRelativeTo(null);
@@ -229,7 +224,7 @@ botonesUsuarios.getComponent(1).addMouseListener(new MouseAdapter() {
   private java.sql.Connection conectarDB() throws SQLException {
     String url = "jdbc:mysql://localhost:3306/proyecto1";
     String usuario = "root";
-    String contraseña = "Tree23815";
+    String contraseña = "root";
     return DriverManager.getConnection(url, usuario, contraseña);
 }
 

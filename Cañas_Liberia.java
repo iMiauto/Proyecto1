@@ -51,7 +51,7 @@ public Cañas_Liberia(int idCarrera, String nombreChofer, int sentido, double pr
         if (sentido.equals("Cañas-Liberia")) {
             totalGanancias_CañasLiberia += totalTiket;
 
-            try (Connection conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/busesinurbanos", "root", "")) {
+            try (Connection conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/busesinurbanos", "root", "root")) {
                 String sql = "UPDATE carreras SET Cañas_Liberia_Total = Cañas_Liberia_Total + ? WHERE idCarreras = ? AND nombreChofer = ?";
                 PreparedStatement ps = conn.prepareStatement(sql);
                 ps.setDouble(1, totalTiket);
