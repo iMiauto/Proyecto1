@@ -214,11 +214,12 @@ public void CalcularPorSentido(String sentido, double totalTiket) {
             }
             @Override
             public String toString() {
-                return "Cañas-Liberia" + "\n"
-                +  "totalTiket="  + "\n"
-                + " totalGanancias_CañasLiberia=" + getTotalGanancias()
-                + "pasajeros=" + getTotalPasajeros()  + "\n" ;
-                
+            return "Unidad: " + getUnidad() +
+               "\nChofer: " + nombreChofer +
+               "\nPasajeros: " + getPasajeros() +
+               "\nTotal Carrera: " + getTotalCarrera() +
+            "\nTotal Tiket: " + getTotalTiket() +
+               "\nGanancias Liberia-Cañas: " + totalGanancias_LiberiaCañas;
             }
     
 }
